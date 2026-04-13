@@ -22,7 +22,7 @@ export default function RootLayout({
         <AppRouterCacheProvider options={{ enableCssLayer: true }}>
           <ThemeProvider theme={theme}>
             <Box sx={{ flexGrow: 1 }}>
-              <AppBar position="static">
+              <AppBar position="sticky">
                 <Toolbar>
                   <IconButton
                     size="large"
