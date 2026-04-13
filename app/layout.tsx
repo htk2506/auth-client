@@ -1,10 +1,10 @@
-import type { Metadata } from "next";
-import "./globals.css";
+import MenuIcon from '@mui/icons-material/Menu';
+import { AppBar, Box, Button, IconButton, Toolbar, Typography } from "@mui/material";
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v16-appRouter';
 import { ThemeProvider } from '@mui/material/styles';
+import type { Metadata } from "next";
 import theme from '../theme';
-import { AppBar, Box, Button, IconButton, Toolbar, Typography } from "@mui/material";
-import MenuIcon from '@mui/icons-material/Menu';
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Auth Client",
