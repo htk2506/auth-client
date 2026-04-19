@@ -10,6 +10,10 @@ const theme = createTheme({
     typography: {
         fontFamily: 'Roboto',
     },
+    colorSchemes: {
+        light: true,
+        dark: true,
+    }
 });
 
 export default theme;
