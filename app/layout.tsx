@@ -39,7 +39,9 @@ export default function RootLayout({
                   <Button color="inherit">Login</Button>
                 </Toolbar>
               </AppBar>
-              {children}
+              <Box className="mt-3">
+                {children}
+              </Box>
             </Box>
           </ThemeProvider>
         </AppRouterCacheProvider>
