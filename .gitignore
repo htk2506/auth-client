@@ -42,3 +42,8 @@ next-env.d.ts
 
 # VS Code
 .vscode
+
+# More to ignore
+.github/workflows/fly-deploy.yml
+fly.toml
+deployment-secrets.json
