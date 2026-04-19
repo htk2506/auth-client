@@ -1,9 +1,10 @@
 import MenuIcon from '@mui/icons-material/Menu';
-import { AppBar, Box, Button, IconButton, Toolbar, Typography } from "@mui/material";
+import { AppBar, Box, Button, CssBaseline, IconButton, Toolbar, Typography } from "@mui/material";
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v16-appRouter';
 import { ThemeProvider } from '@mui/material/styles';
 import type { Metadata } from "next";
 import theme from '../theme';
+import { ColorSchemeSelection } from './components/ColorSchemeSelection';
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -21,6 +22,7 @@ export default function RootLayout({
       <body className={`antialiased`}>
         <AppRouterCacheProvider options={{ enableCssLayer: true }}>
           <ThemeProvider theme={theme}>
+            <CssBaseline />
             <Box sx={{ flexGrow: 1 }}>
               <AppBar position="sticky">
                 <Toolbar>
@@ -40,6 +42,7 @@ export default function RootLayout({
                 </Toolbar>
               </AppBar>
               <Box className="mt-3">
+                <ColorSchemeSelection />
                 {children}
               </Box>
             </Box>

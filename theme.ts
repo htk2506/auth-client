@@ -6,14 +6,16 @@ import '@fontsource/roboto/700.css';
 import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme({
-    cssVariables: true,
     typography: {
         fontFamily: 'Roboto',
+    },
+    cssVariables: {
+        colorSchemeSelector: 'data'
     },
     colorSchemes: {
         light: true,
         dark: true,
-    }
+    },
 });
 
 export default theme;
