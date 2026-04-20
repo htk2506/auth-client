@@ -1,6 +1,7 @@
 import MenuIcon from '@mui/icons-material/Menu';
 import { AppBar, Box, Button, CssBaseline, IconButton, Toolbar, Typography } from "@mui/material";
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v16-appRouter';
+import InitColorSchemeScript from '@mui/material/InitColorSchemeScript';
 import { ThemeProvider } from '@mui/material/styles';
 import type { Metadata } from "next";
 import theme from '../theme';
@@ -20,6 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`antialiased`}>
+        <InitColorSchemeScript attribute="data" />
         <AppRouterCacheProvider options={{ enableCssLayer: true }}>
           <ThemeProvider theme={theme}>
             <CssBaseline />
@@ -46,7 +48,7 @@ export default function RootLayout({
                 {children}
               </Box>
             </Box>
-          </ThemeProvider>
+          </ThemeProvider >
         </AppRouterCacheProvider>
       </body>
     </html>
