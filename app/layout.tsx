@@ -24,7 +24,7 @@ export default function RootLayout({
         <AppRouterCacheProvider options={{ enableCssLayer: true }}>
           <ThemeProvider theme={theme}>
             <CssBaseline />
-            <Box sx={{ flexGrow: 1 }}>
+            <Box>
               <AppBar position="sticky">
                 <Toolbar>
                   <IconButton
@@ -32,11 +32,11 @@ export default function RootLayout({
                     edge="start"
                     color="inherit"
                     aria-label="menu"
-                    sx={{ mr: 2 }}
+                    className="mr-2"
                   >
                     <MenuIcon />
                   </IconButton>
-                  <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                  <Typography variant="h6" className="grow">
                     Welcome
                   </Typography>
                   <Button color="inherit">Login</Button>

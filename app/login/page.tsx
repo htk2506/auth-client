@@ -28,8 +28,8 @@ export default function LoginPage({ }: Readonly<{}>) {
 
   return (
     <Box className="flex h-full flex-col items-center justify-center gap-2">
-      <Container maxWidth="sm" sx={{ boxShadow: 3, padding: 5 }}>
-        <Typography variant="h1" sx={{ fontSize: 24, fontStyle: "bold" }}>
+      <Container maxWidth="sm" className="shadow-md/25 p-5 rounded-lg">
+        <Typography variant="h1" className="text-2xl">
           Login
         </Typography>
         <form onSubmit={formik.handleSubmit}>

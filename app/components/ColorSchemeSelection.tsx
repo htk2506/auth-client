@@ -8,19 +8,7 @@ export function ColorSchemeSelection() {
         return null;
     }
     return (
-        <Box
-            sx={{
-                display: 'flex',
-                width: '100%',
-                alignItems: 'center',
-                justifyContent: 'center',
-                bgcolor: 'background.default',
-                color: 'text.primary',
-                borderRadius: 1,
-                p: 3,
-                minHeight: '56px',
-            }}
-        >
+        <Box className="flex h-full flex-col items-center justify-center gap-2"        >
             <FormControl>
                 <FormLabel id="demo-theme-toggle">Theme</FormLabel>
                 <RadioGroup
@@ -37,5 +25,6 @@ export function ColorSchemeSelection() {
                     <FormControlLabel value="dark" control={<Radio />} label="Dark" />
                 </RadioGroup>
             </FormControl>
-        </Box>);
+        </Box>
+    );
 }
