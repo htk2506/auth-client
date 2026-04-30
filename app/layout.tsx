@@ -5,7 +5,6 @@ import InitColorSchemeScript from '@mui/material/InitColorSchemeScript';
 import { ThemeProvider } from '@mui/material/styles';
 import type { Metadata } from "next";
 import theme from '../theme';
-import { ColorSchemeSelection } from './components/ColorSchemeSelection';
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -43,8 +42,7 @@ export default function RootLayout({
                   <Button color="inherit">Login</Button>
                 </Toolbar>
               </AppBar>
-              <Box className="mt-3">
-                <ColorSchemeSelection />
+              <Box className="mt-10">
                 {children}
               </Box>
             </Box>
