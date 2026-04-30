@@ -39,7 +39,7 @@ export default function RootLayout({
                   <Typography variant="h6" className="grow">
                     Welcome
                   </Typography>
-                  <Button color="inherit">Login</Button>
+                  <Button href="/login" color="inherit">Login</Button>
                 </Toolbar>
               </AppBar>
               <Box className="mt-10">
