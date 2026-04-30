@@ -42,7 +42,7 @@ export default function LoginPage({ }: Readonly<{}>) {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             error={formik.touched.username && Boolean(formik.errors.username)}
-            helperText={formik.touched.username && formik.errors.username}
+            helperText={formik.touched.username && formik.errors.username || " "}
           />
           <TextField
             fullWidth
@@ -54,7 +54,7 @@ export default function LoginPage({ }: Readonly<{}>) {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             error={formik.touched.password && Boolean(formik.errors.password)}
-            helperText={formik.touched.password && formik.errors.password}
+            helperText={formik.touched.password && formik.errors.password || " "}
           />
           <Button
             color="primary"
