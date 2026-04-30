@@ -42,7 +42,7 @@ export default function RootLayout({
                   <Button href="/login" color="inherit">Login</Button>
                 </Toolbar>
               </AppBar>
-              <Box className="mt-10">
+              <Box className="mt-5">
                 {children}
               </Box>
             </Box>
