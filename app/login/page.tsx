@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, Button, Container, TextField, Typography } from "@mui/material";
+import { Box, Button, Container, Link, TextField, Typography } from "@mui/material";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
@@ -64,6 +64,14 @@ export default function LoginPage({ }: Readonly<{}>) {
             Login
           </Button>
         </form>
+        {/* TODO: Fix link */}
+        <Link href="/">
+          Forgot password?
+        </Link>
+        {/* TODO: Fix link */}
+        <Link href="/">
+          Create account
+        </Link>
       </Container>
     </Box>
   );
