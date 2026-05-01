@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, Button, Container, Link, TextField, Typography } from "@mui/material";
+import { Box, Button, Link, TextField, Typography } from "@mui/material";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
@@ -27,12 +27,12 @@ export default function LoginPage({ }: Readonly<{}>) {
   });
 
   return (
-    <Box className="flex h-full flex-col items-center justify-center gap-2">
-      <Container maxWidth="sm" className="shadow-md/25 p-5 rounded-lg">
-        <Typography variant="h1" className="text-2xl">
-          Login
-        </Typography>
-        <form onSubmit={formik.handleSubmit}>
+    <Box className="grid grid-cols-1 gap-2 place-items-center">
+      <form onSubmit={formik.handleSubmit}>
+        <Box className="shadow-md w-md p-5 rounded-lg grid grid-cols-1 gap-2">
+          <Typography variant="h1" className="text-2xl mb-4">
+            Login
+          </Typography>
           <TextField
             fullWidth
             id="username"
@@ -63,16 +63,18 @@ export default function LoginPage({ }: Readonly<{}>) {
           >
             Login
           </Button>
-        </form>
-        {/* TODO: Fix link */}
-        <Link href="/">
-          Forgot password?
-        </Link>
-        {/* TODO: Fix link */}
-        <Link href="/">
-          Create account
-        </Link>
-      </Container>
+          <Box className="mt-5 flex flex-row justify-between">
+            {/* TODO: Fix link */}
+            <Link href="/">
+              Forgot password?
+            </Link>
+            {/* TODO: Fix link */}
+            <Link href="/">
+              Create account
+            </Link>
+          </Box>
+        </Box>
+      </form>
     </Box>
   );
 }

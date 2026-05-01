@@ -2,7 +2,7 @@ import { Box, Link, Typography } from '@mui/material';
 
 export default function NotFound() {
     return (
-        <Box className="flex h-full flex-col items-center justify-center gap-2">
+        <Box className="grid grid-cols-1 gap-2 place-items-center">
             <Typography variant="h1" className="text-2xl font-medium">
                 404 Not Found
             </Typography>
