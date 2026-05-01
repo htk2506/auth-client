@@ -28,8 +28,8 @@ export default function LoginPage({ }: Readonly<{}>) {
 
   return (
     <Box className="grid grid-cols-1 gap-2 place-items-center">
-      <form onSubmit={formik.handleSubmit}>
-        <Box className="w-full md:w-md p-5 rounded-lg grid grid-cols-1 gap-2" sx={{ boxShadow: 1 }}>
+      <Box className="mx-2 sm:w-sm p-5 rounded-lg grid grid-cols-1 gap-2" sx={{ boxShadow: 1 }}>
+        <form onSubmit={formik.handleSubmit}>
           <Typography variant="h1" className="text-2xl mb-4">
             Login
           </Typography>
@@ -60,10 +60,11 @@ export default function LoginPage({ }: Readonly<{}>) {
             color="primary"
             variant="contained"
             type="submit"
+            className="w-full"
           >
             Login
           </Button>
-          <Box className="mt-5 gap-2 flex flex-col md:flex-row md:justify-between">
+          <Box className="mt-5 gap-2 flex flex-col sm:flex-row sm:justify-between">
             {/* TODO: Fix link */}
             <Link href="/">
               Forgot password?
@@ -73,8 +74,8 @@ export default function LoginPage({ }: Readonly<{}>) {
               Create account
             </Link>
           </Box>
-        </Box>
-      </form>
+        </form>
+      </Box>
     </Box>
   );
 }
