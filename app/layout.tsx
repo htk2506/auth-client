@@ -1,10 +1,10 @@
-import MenuIcon from '@mui/icons-material/Menu';
-import { AppBar, Box, Button, CssBaseline, IconButton, Toolbar, Typography } from "@mui/material";
+import { Box, CssBaseline } from "@mui/material";
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v16-appRouter';
 import InitColorSchemeScript from '@mui/material/InitColorSchemeScript';
 import { ThemeProvider } from '@mui/material/styles';
 import type { Metadata } from "next";
 import theme from '../theme';
+import { RootLayoutAppBar } from './components/RootLayoutAppBar';
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -25,23 +25,7 @@ export default function RootLayout({
           <ThemeProvider theme={theme}>
             <CssBaseline />
             <Box>
-              <AppBar position="sticky">
-                <Toolbar variant="dense">
-                  <IconButton
-                    size="large"
-                    edge="start"
-                    color="inherit"
-                    aria-label="menu"
-                    className="mr-2"
-                  >
-                    <MenuIcon />
-                  </IconButton>
-                  <Typography variant="h6" className="grow">
-                    Welcome
-                  </Typography>
-                  <Button href="/login" color="inherit">Login</Button>
-                </Toolbar>
-              </AppBar>
+              <RootLayoutAppBar />
               <Box className="mt-5">
                 {children}
               </Box>
