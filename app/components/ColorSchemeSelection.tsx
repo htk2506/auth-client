@@ -4,9 +4,9 @@ import { Box, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, useCo
 
 export function ColorSchemeSelection() {
     const { mode, setMode } = useColorScheme();
-    if (!mode) {
-        return null;
-    }
+
+    if (!mode) { return null; }
+
     return (
         <Box className="flex h-full flex-col items-center justify-center gap-2"        >
             <FormControl>
