@@ -26,7 +26,7 @@ export default function RootLayout({
             <CssBaseline />
             <Box>
               <AppBar position="sticky">
-                <Toolbar>
+                <Toolbar variant="dense">
                   <IconButton
                     size="large"
                     edge="start"

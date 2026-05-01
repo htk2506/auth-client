@@ -29,7 +29,7 @@ export default function LoginPage({ }: Readonly<{}>) {
   return (
     <Box className="grid grid-cols-1 gap-2 place-items-center">
       <form onSubmit={formik.handleSubmit}>
-        <Box className="shadow-md w-md p-5 rounded-lg grid grid-cols-1 gap-2">
+        <Box className="w-md p-5 rounded-lg grid grid-cols-1 gap-2" sx={{ boxShadow: 1 }}>
           <Typography variant="h1" className="text-2xl mb-4">
             Login
           </Typography>
