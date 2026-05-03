@@ -6,6 +6,7 @@ export function RootLayoutAppBar() {
         <AppBar position="sticky">
             <Toolbar variant="dense">
 
+                {/* TODO: Add functionality to menu button */}
                 <IconButton
                     size="large"
                     edge="start"
@@ -20,6 +21,7 @@ export function RootLayoutAppBar() {
                     Welcome
                 </Typography>
 
+                {/* TODO: Make button change to logout if signed in already */}
                 <Button href="/login" color="inherit">Login</Button>
 
             </Toolbar>

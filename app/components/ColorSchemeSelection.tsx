@@ -8,7 +8,7 @@ export function ColorSchemeSelection() {
     if (!mode) { return null; }
 
     return (
-        <Box className="flex h-full flex-col items-center justify-center gap-2"        >
+        <Box className="flex flex-col items-center">
             <FormControl>
                 <FormLabel id="demo-theme-toggle">Theme</FormLabel>
                 <RadioGroup

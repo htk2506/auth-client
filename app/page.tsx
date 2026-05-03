@@ -3,7 +3,7 @@ import { ColorSchemeSelection } from "./components/ColorSchemeSelection";
 
 export default function Home() {
   return (
-    <Box className="grid grid-cols-1 gap-2 place-items-center">
+    <Box className="flex flex-col justify-center items-center gap-2">
       <Typography>Hello World</Typography>
       <Button variant="contained">Hello world</Button>
       <ColorSchemeSelection />
