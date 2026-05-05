@@ -4,23 +4,11 @@ import { Box, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, useCo
 
 export function ColorSchemeSelection() {
     const { mode, setMode } = useColorScheme();
-    if (!mode) {
-        return null;
-    }
+
+    if (!mode) { return null; }
+
     return (
-        <Box
-            sx={{
-                display: 'flex',
-                width: '100%',
-                alignItems: 'center',
-                justifyContent: 'center',
-                bgcolor: 'background.default',
-                color: 'text.primary',
-                borderRadius: 1,
-                p: 3,
-                minHeight: '56px',
-            }}
-        >
+        <Box className="flex flex-col items-center">
             <FormControl>
                 <FormLabel id="demo-theme-toggle">Theme</FormLabel>
                 <RadioGroup
@@ -37,5 +25,6 @@ export function ColorSchemeSelection() {
                     <FormControlLabel value="dark" control={<Radio />} label="Dark" />
                 </RadioGroup>
             </FormControl>
-        </Box>);
+        </Box>
+    );
 }
