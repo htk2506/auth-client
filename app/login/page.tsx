@@ -28,7 +28,7 @@ export default function LoginPage({ }: Readonly<{}>) {
 
   return (
     <Box className="flex flex-col items-center">
-      <Box className="mx-2 sm:w-sm p-5 rounded-lg" sx={{ boxShadow: 1 }}>
+      <Box className="w-9/10 sm:w-sm p-5 rounded-lg" sx={{ boxShadow: 1 }}>
         <form onSubmit={formik.handleSubmit}>
           <Box className="flex flex-col gap-2">
 
