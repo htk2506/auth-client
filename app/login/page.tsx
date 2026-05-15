@@ -2,6 +2,7 @@
 
 import { Box, Button, Link, TextField, Typography } from "@mui/material";
 import { useFormik } from "formik";
+import { useRouter, useSearchParams } from "next/navigation";
 import * as yup from "yup";
 
 const validationSchema = yup.object({
@@ -14,6 +15,11 @@ const validationSchema = yup.object({
 });
 
 export default function LoginPage({ }: Readonly<{}>) {
+
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callback_url') || '/';
+
   const formik = useFormik({
     initialValues: {
       username: "",
@@ -23,6 +29,9 @@ export default function LoginPage({ }: Readonly<{}>) {
     onSubmit: (values) => {
       // TODO: Trigger call to login
       alert(JSON.stringify(values, null, 2));
+
+      // Send user back to where they came from
+      router.push(callbackUrl);
     },
   });
 
@@ -71,10 +80,12 @@ export default function LoginPage({ }: Readonly<{}>) {
             </Button>
 
             <Box className="mt-5 flex flex-col gap-2 sm:flex-row sm:justify-between">
+
               {/* TODO: Fix link */}
               <Link href="/">
                 Forgot password?
               </Link>
+
               {/* TODO: Fix link */}
               <Link href="/">
                 Create account
