@@ -3,6 +3,7 @@
 import { Box, Button, Link, TextField, Typography } from "@mui/material";
 import { useFormik } from "formik";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import * as yup from "yup";
 
 const validationSchema = yup.object({
@@ -14,11 +15,11 @@ const validationSchema = yup.object({
     .required("Password is required"),
 });
 
-export default function LoginPage({ }: Readonly<{}>) {
+export function LoginForm({ }: Readonly<{}>) {
 
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callback_url') || '/';
+  const callbackUrl = (searchParams.get("callback_url")?.startsWith("/") ? searchParams.get("callback_url") : "/") ?? "/";
 
   const formik = useFormik({
     initialValues: {
@@ -96,5 +97,13 @@ export default function LoginPage({ }: Readonly<{}>) {
         </form>
       </Box>
     </Box>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<Box>Loading...</Box>}>
+      <LoginForm />
+    </Suspense>
   );
 }
