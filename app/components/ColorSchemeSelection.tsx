@@ -1,5 +1,4 @@
 'use client'
-
 import { Box, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, useColorScheme } from "@mui/material";
 
 export function ColorSchemeSelection() {

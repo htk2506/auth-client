@@ -1,16 +1,11 @@
+'use client'
 import { Box, CssBaseline } from "@mui/material";
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v16-appRouter';
 import InitColorSchemeScript from '@mui/material/InitColorSchemeScript';
 import { ThemeProvider } from '@mui/material/styles';
-import type { Metadata } from "next";
 import theme from '../theme';
 import { RootLayoutAppBar } from './components/RootLayoutAppBar';
 import "./globals.css";
-
-export const metadata: Metadata = {
-  title: "Auth Client",
-  description: "Front-end for an auth server",
-};
 
 export default function RootLayout({
   children,
@@ -19,6 +14,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <title>{"Auth Client"}</title>
+      <meta name="description" content={"Front-end for an auth server"} />
       <body className={`antialiased`}>
         <InitColorSchemeScript attribute="data" />
         <AppRouterCacheProvider options={{ enableCssLayer: true }}>
