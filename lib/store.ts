@@ -7,7 +7,7 @@ export const makeStore = () => {
         reducer: {
             [apiSlice.reducerPath]: apiSlice.reducer,
         },
-        middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
+        middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(apiSlice.middleware),
     });
     setupListeners(store.dispatch);
     return store;

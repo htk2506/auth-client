@@ -1,4 +1,5 @@
 'use client'
+import { useGetCurrentUserQuery } from '@/lib/api-slice';
 import MenuIcon from '@mui/icons-material/Menu';
 import { AppBar, Button, IconButton, Toolbar, Typography } from "@mui/material";
 import { usePathname } from 'next/navigation';
@@ -6,6 +7,7 @@ import { usePathname } from 'next/navigation';
 export function RootLayoutAppBar() {
     const pathname = usePathname();
     const loginUrl = `/login?callback_url=${encodeURIComponent(pathname)}`
+    const currentUser = useGetCurrentUserQuery();
 
     return (
         <AppBar position="sticky">

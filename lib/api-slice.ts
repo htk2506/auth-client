@@ -4,10 +4,10 @@ import { User } from './types/user-model'
 // Define a service using a base URL and expected endpoints
 export const apiSlice = createApi({
     reducerPath: 'api',
-    baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:8080' }),
+    baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_SERVER_URL }),
     endpoints: (builder) => ({
         getCurrentUser: builder.query<User, void>({
-            query: () => `/me`,
+            query: () => `v1/users/me`,
         }),
     }),
 })
