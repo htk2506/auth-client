@@ -3,6 +3,7 @@
 Implementing a simple client for an authentication server.
 
 ## Running the Project
+Create an `.env` file with variables in [.env.example](.env.example) set to appropriate values.
 
 Run the development server:
 
