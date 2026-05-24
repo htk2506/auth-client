@@ -1,6 +1,6 @@
 'use client'
 import { Box, Button, Typography } from "@mui/material";
-import { ColorSchemeSelection } from "./components/ColorSchemeSelection";
+import { ColorSchemeSelection } from "./components/color-scheme-selection";
 
 export default function Home() {
   return (

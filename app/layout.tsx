@@ -4,7 +4,8 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v16-appRouter';
 import InitColorSchemeScript from '@mui/material/InitColorSchemeScript';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from '../theme';
-import { RootLayoutAppBar } from './components/RootLayoutAppBar';
+import { RootLayoutAppBar } from './components/root-layout-app-bar';
+import StoreProvider from "./components/store-provider";
 import "./globals.css";
 
 export default function RootLayout({
@@ -21,12 +22,14 @@ export default function RootLayout({
         <AppRouterCacheProvider options={{ enableCssLayer: true }}>
           <ThemeProvider theme={theme}>
             <CssBaseline />
-            <Box>
-              <RootLayoutAppBar />
-              <Box className="mt-5">
-                {children}
+            <StoreProvider>
+              <Box>
+                <RootLayoutAppBar />
+                <Box className="mt-5">
+                  {children}
+                </Box>
               </Box>
-            </Box>
+            </StoreProvider>
           </ThemeProvider >
         </AppRouterCacheProvider>
       </body>
