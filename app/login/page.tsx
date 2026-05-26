@@ -1,8 +1,10 @@
 'use client'
-import { Box, Button, Link, TextField, Typography } from "@mui/material";
+import { usePostLoginRequestMutation } from "@/lib/api-slice";
+import { LoginUserRequestBody } from "@/lib/types/login-user-request-body";
+import { Alert, Box, Button, Link, TextField, Typography } from "@mui/material";
 import { useFormik } from "formik";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import * as yup from "yup";
 
 const validationSchema = yup.object({
@@ -19,6 +21,8 @@ export function LoginForm({ }: Readonly<{}>) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = (searchParams.get("callback_url")?.startsWith("/") ? searchParams.get("callback_url") : "/") ?? "/";
+  const [loginErrorMessage, setLoginErrorMessage] = useState<string>("");
+  const [postLoginRequest, { }] = usePostLoginRequestMutation();
 
   const formik = useFormik({
     initialValues: {
@@ -26,12 +30,23 @@ export function LoginForm({ }: Readonly<{}>) {
       password: "",
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      // TODO: Trigger call to login
-      alert(JSON.stringify(values, null, 2));
+    onSubmit: async (values) => {
+      try {
+        // Trigger call to login
+        const loginRequestBody: LoginUserRequestBody = {
+          username: values.username,
+          password: values.password,
+        }
 
-      // Send user back to where they came from
-      router.push(callbackUrl);
+        const result = await postLoginRequest(loginRequestBody).unwrap();
+        // TODO: save session token
+
+        // Send user back to where they came from
+        router.push(callbackUrl);
+      } catch (err: any) {
+        setLoginErrorMessage(err.data.detail);
+        console.error(`Failed to  login: ${JSON.stringify(err)}`);
+      }
     },
   });
 
@@ -69,6 +84,12 @@ export function LoginForm({ }: Readonly<{}>) {
               error={formik.touched.password && Boolean(formik.errors.password)}
               helperText={formik.touched.password && formik.errors.password || " "}
             />
+
+            {loginErrorMessage &&
+              <Alert variant="outlined" severity="error" className="mb-5">
+                {loginErrorMessage}
+              </Alert>
+            }
 
             <Button
               fullWidth

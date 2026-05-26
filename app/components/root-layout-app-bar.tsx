@@ -7,7 +7,15 @@ import { usePathname } from 'next/navigation';
 export function RootLayoutAppBar() {
     const pathname = usePathname();
     const loginUrl = `/login?callback_url=${encodeURIComponent(pathname)}`
-    const currentUser = useGetCurrentUserQuery();
+    const {
+        data: currentUser,
+        isLoading,
+        isSuccess,
+        isError,
+        error
+    } = useGetCurrentUserQuery()
+
+    // TODO: Add check that a session token is stored before fetching current user
 
     return (
         <AppBar position="sticky">
