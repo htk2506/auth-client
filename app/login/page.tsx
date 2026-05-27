@@ -1,6 +1,6 @@
 'use client'
 import { usePostLoginRequestMutation } from '@/lib/api-slice';
-import { LoginUserRequestBody } from '@/lib/types/login-user-request-body';
+import { LoginUserRequestBody } from '@/lib/types';
 import { Alert, Box, Button, CircularProgress, Link, TextField, Typography } from '@mui/material';
 import { useFormik } from 'formik';
 import { useRouter, useSearchParams } from 'next/navigation';

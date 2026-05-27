@@ -1,7 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { LoginUserRequestBody } from './types/login-user-request-body'
-import { LoginUserResponseBody } from './types/login-user-response-body'
-import { User } from './types/user-model'
+import { LoginUserRequestBody, LoginUserResponseBody, User } from './types'
 
 // Define a service using a base URL and expected endpoints
 export const apiSlice = createApi({
