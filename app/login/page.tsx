@@ -4,7 +4,7 @@ import { LoginUserRequestBody } from '@/lib/types';
 import { Alert, Box, Button, CircularProgress, Link, TextField, Typography } from '@mui/material';
 import { useFormik } from 'formik';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Suspense, useState } from 'react';
+import { Suspense, useMemo, useState } from 'react';
 import * as yup from 'yup';
 
 const validationSchema = yup.object({
@@ -17,12 +17,18 @@ const validationSchema = yup.object({
 });
 
 export function LoginForm({ }: Readonly<{}>) {
-
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = (searchParams.get('callback_url')?.startsWith('/') ? searchParams.get('callback_url') : '/') ?? '/';
   const [loginErrorMessage, setLoginErrorMessage] = useState<string>('');
   const [postLoginRequest, { isLoading, isError }] = usePostLoginRequestMutation();
+
+  // The URL that user should be sent to after successful login
+  const callbackUrl = useMemo(() => {
+    // Get the query param
+    const callbackUrlQueryParam = decodeURIComponent(searchParams.get('callback_url') ?? '');
+    // If callback URL isn't a path, return to root
+    return callbackUrlQueryParam?.startsWith('/') ? callbackUrlQueryParam : '/';
+  }, [searchParams])
 
   const formik = useFormik({
     initialValues: {

@@ -6,7 +6,6 @@ import { usePathname } from 'next/navigation';
 
 export function RootLayoutAppBar() {
     const pathname = usePathname();
-    const loginUrl = `/login?callback_url=${encodeURIComponent(pathname)}`
     const {
         data: currentUser,
         isLoading,
@@ -14,6 +13,9 @@ export function RootLayoutAppBar() {
         isError,
         error
     } = useGetCurrentUserQuery()
+
+    // TODO: Use whole URL instead of just path
+    const loginUrl = `/login?callback_url=${encodeURIComponent(pathname)}`
 
     // TODO: Add check that a session token is stored before fetching current user
 
