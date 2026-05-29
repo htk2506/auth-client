@@ -22,12 +22,12 @@ export function LoginForm({ }: Readonly<{}>) {
   const [loginErrorMessage, setLoginErrorMessage] = useState<string>('');
   const [postLoginRequest, { isLoading, isError }] = usePostLoginRequestMutation();
 
-  // The URL that user should be sent to after successful login
-  const callbackUrl = useMemo(() => {
+  // The path that user should be sent to after successful login
+  const redirectPath = useMemo(() => {
     // Get the query param
-    const callbackUrlQueryParam = decodeURIComponent(searchParams.get('callback_url') ?? '');
-    // If callback URL isn't a path, return to root
-    return callbackUrlQueryParam?.startsWith('/') ? callbackUrlQueryParam : '/';
+    const redirectPathQueryParam = decodeURIComponent(searchParams.get('redirect_path') ?? '');
+    // If query param isn't a path, return to root
+    return redirectPathQueryParam?.startsWith('/') ? redirectPathQueryParam : '/';
   }, [searchParams])
 
   const formik = useFormik({
@@ -47,8 +47,9 @@ export function LoginForm({ }: Readonly<{}>) {
         // TODO: save session token
         const result = await postLoginRequest(loginRequestBody).unwrap();
 
-        // Send user back to where they came from
-        router.push(callbackUrl);
+        // Send user to next route
+        router.push(redirectPath);
+        router.refresh();
       } catch (err: any) {
         setLoginErrorMessage(err.data.detail);
         console.error(`Failed to  login: ${JSON.stringify(err)}`);

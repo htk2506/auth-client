@@ -3,9 +3,10 @@ import { useGetCurrentUserQuery } from '@/lib/api-slice';
 import MenuIcon from '@mui/icons-material/Menu';
 import { AppBar, Button, IconButton, Toolbar, Typography } from '@mui/material';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { Suspense, useMemo } from 'react';
+import { Suspense, useEffect, useMemo, useState } from 'react';
 
 function ToolBarContent() {
+    const LOGIN_BASE_PATH = '/login'
     const currentPath = usePathname();
     const searchParams = useSearchParams();
     const {
@@ -15,26 +16,40 @@ function ToolBarContent() {
         isError,
         error
     } = useGetCurrentUserQuery()
+    const [loginButtonRedirectPath, setLoginButtonRedirectPath] = useState<string>(LOGIN_BASE_PATH); // Where the login button should redirect to
+
+    // The current URL the browser is at
     const currentUrl = useMemo(() => {
         return (typeof window !== 'undefined') ? window.location.href : '';
     }, [searchParams, currentPath]);
 
-    const callbackUrl = useMemo(() => {
+    // The current path the browser is at, including the query params
+    const currentPathAndParams = useMemo(() => {
+        // Remove the http:// or https:// protocol
+        const currentHostAndPath = currentUrl.replace(/https?:\/\//, '');
+        // Slice the path after the hostname 
+        return currentHostAndPath.slice(currentHostAndPath.indexOf('/')) || '/';
+    }, [currentUrl]);
+
+    // The path specified by the redirect_path query param (can be included if browers is already at login page)
+    const redirectPathFromQuery = useMemo(() => {
         // Get the query param
-        const callbackUrlQueryParam = decodeURIComponent(searchParams.get('callback_url') ?? '');
-        // If callback URL isn't a path, return to root
-        return callbackUrlQueryParam?.startsWith('/') ? callbackUrlQueryParam : '/';
+        const redirectPathQueryParam = decodeURIComponent(searchParams.get('redirect_path') ?? '');
+        // If query param isn't a path, return to root
+        return redirectPathQueryParam?.startsWith('/') ? redirectPathQueryParam : '/';
     }, [searchParams])
 
-    const loginPath = '/login'
-    console.log(currentUrl);
-
-    // TODO: Use whole URL instead of just path
-    const loginUrl = `${loginPath}?callback_url=${encodeURIComponent(currentPath)}`
-
-    // TODO: If already on login path, repass the login callback
-
-    // TODO: Add check that a session token is stored before fetching current user
+    // Set the path the login button will redirect to
+    useEffect(() => {
+        // Determine the path browser should redirect to after a successful login.
+        // If browser is already on the login page, use the pre-existing redirect_path query parameter.
+        // Otherwise, the browser should redirect back to the current page.
+        const redirectPathAfterLogin = (currentPath === LOGIN_BASE_PATH) ? redirectPathFromQuery : currentPathAndParams;
+        // Add the redirect path for following successful login as a query parameter
+        const loginRedirectPath = `${LOGIN_BASE_PATH}?redirect_path=${encodeURIComponent(redirectPathAfterLogin)}`
+        // Save path that will be used by the login button
+        setLoginButtonRedirectPath(loginRedirectPath);
+    }, [currentPath, redirectPathFromQuery, currentPathAndParams]);
 
     return (
         <>
@@ -54,7 +69,7 @@ function ToolBarContent() {
             </Typography>
 
             {/* TODO: Make button change to logout if signed in already */}
-            <Button href={loginUrl} color='inherit'>
+            <Button href={loginButtonRedirectPath} color='inherit'>
                 Login
             </Button>
         </>
