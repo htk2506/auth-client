@@ -3,7 +3,7 @@ import { usePostLoginRequestMutation } from '@/lib/api-slice';
 import { LoginUserRequestBody } from '@/lib/types';
 import { Alert, Box, Button, CircularProgress, Link, TextField, Typography } from '@mui/material';
 import { useFormik } from 'formik';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { Suspense, useMemo, useState } from 'react';
 import * as yup from 'yup';
 
@@ -17,7 +17,6 @@ const validationSchema = yup.object({
 });
 
 export function LoginForm({ }: Readonly<{}>) {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const [loginErrorMessage, setLoginErrorMessage] = useState<string>('');
   const [postLoginRequest, { isLoading, isError }] = usePostLoginRequestMutation();
@@ -48,8 +47,7 @@ export function LoginForm({ }: Readonly<{}>) {
         const result = await postLoginRequest(loginRequestBody).unwrap();
 
         // Send user to next route
-        router.push(redirectPath);
-        router.refresh();
+        window.location.href = redirectPath;
       } catch (err: any) {
         setLoginErrorMessage(err.data.detail);
         console.error(`Failed to  login: ${JSON.stringify(err)}`);
