@@ -52,6 +52,30 @@ function ToolBarContent() {
         setLoginButtonRedirectPath(loginRedirectPath);
     }, [currentPath, redirectPathFromQuery, currentPathAndParams]);
 
+    const renderLoginFeatures = () => {
+        if (getCurrentUserIsLoading) { return; }
+
+        // TODO: Make logout button do logout functionality
+        if (getCurrentUserIsSuccess) {
+            return (
+                <>
+                    <Tooltip title={currentUser.username} placement='bottom' enterTouchDelay={50} arrow>
+                        <AccountCircleIcon />
+                    </Tooltip>
+                    <Button href={loginButtonRedirectPath} color='inherit'>
+                        Logout
+                    </Button>
+                </>
+            );
+        } else {
+            return (
+                <Button href={loginButtonRedirectPath} color='inherit'>
+                    Login
+                </Button>
+            );
+        }
+    }
+
     return (
         <>
             {/* TODO: Add functionality to menu button */}
@@ -69,22 +93,7 @@ function ToolBarContent() {
                 Welcome
             </Typography>
 
-            {getCurrentUserIsSuccess &&
-                <Tooltip title={currentUser.username} placement='bottom' enterTouchDelay={50} arrow>
-                    <AccountCircleIcon />
-                </Tooltip>
-            }
-
-            {/* TODO: Make logout button do logout functionality*/}
-            {getCurrentUserIsSuccess ?
-                <Button href={loginButtonRedirectPath} color='inherit'>
-                    Logout
-                </Button>
-                :
-                <Button href={loginButtonRedirectPath} color='inherit'>
-                    Login
-                </Button>
-            }
+            {renderLoginFeatures()}
         </>
     );
 }
