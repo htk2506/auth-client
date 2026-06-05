@@ -1,7 +1,8 @@
 'use client'
 import { useGetCurrentUserQuery } from '@/lib/api-slice';
 import MenuIcon from '@mui/icons-material/Menu';
-import { AppBar, Button, IconButton, Toolbar, Typography } from '@mui/material';
+import PersonIcon from '@mui/icons-material/Person';
+import { AppBar, Button, IconButton, Toolbar, Tooltip, Typography } from '@mui/material';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useMemo, useState } from 'react';
 
@@ -67,6 +68,12 @@ function ToolBarContent() {
             <Typography variant='h6' className='grow'>
                 Welcome
             </Typography>
+
+            {getCurrentUserIsSuccess &&
+                <Tooltip title={currentUser.username} placement='bottom' arrow>
+                    <PersonIcon />
+                </Tooltip>
+            }
 
             {/* TODO: Make button change to logout if signed in already */}
             <Button href={loginButtonRedirectPath} color='inherit'>
