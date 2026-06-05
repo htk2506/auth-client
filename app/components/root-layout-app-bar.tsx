@@ -52,6 +52,7 @@ function ToolBarContent() {
         setLoginButtonRedirectPath(loginRedirectPath);
     }, [currentPath, redirectPathFromQuery, currentPathAndParams]);
 
+    // Renders the login/logout button and indicator for whether user is currently logged in
     const renderLoginFeatures = () => {
         if (getCurrentUserIsLoading) { return; }
 
