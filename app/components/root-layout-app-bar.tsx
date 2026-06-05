@@ -11,10 +11,10 @@ function ToolBarContent() {
     const searchParams = useSearchParams();
     const {
         data: currentUser,
-        isLoading,
-        isSuccess,
-        isError,
-        error
+        isLoading: getCurrentUserIsLoading,
+        isSuccess: getCurrentUserIsSuccess,
+        isError: getCurrentUserIsError,
+        error: getCurrentUserError,
     } = useGetCurrentUserQuery()
     const [loginButtonRedirectPath, setLoginButtonRedirectPath] = useState<string>(LOGIN_BASE_PATH); // Where the login button should redirect to
 
