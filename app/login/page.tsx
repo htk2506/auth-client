@@ -43,8 +43,9 @@ export function LoginForm({ }: Readonly<{}>) {
           password: values.password,
         }
 
-        // TODO: save session token
+        // Save session token
         const result = await postLoginRequest(loginRequestBody).unwrap();
+        localStorage.setItem('sessionToken', result.session_token)
 
         // Send user to next route
         window.location.href = redirectPath;
