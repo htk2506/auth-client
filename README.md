@@ -1,19 +1,14 @@
 # auth-client
 
-Implementing a simple authentication server.
+Implementing a simple client for an authentication server.
 
 ## Running the Project
+Create an `.env` file with variables in [.env.example](.env.example) set to appropriate values.
 
-First, run the development server:
+Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) 
