@@ -1,5 +1,6 @@
 'use client'
 import { usePostLoginRequestMutation } from '@/lib/api-slice';
+import { setSessionToken } from '@/lib/session-token-management';
 import { LoginUserRequestBody } from '@/lib/types';
 import { Alert, Box, Button, CircularProgress, Link, TextField, Typography } from '@mui/material';
 import { useFormik } from 'formik';
@@ -43,9 +44,9 @@ export function LoginForm({ }: Readonly<{}>) {
           password: values.password,
         }
 
-        // Save session token
+        // Save the session token
         const result = await postLoginRequest(loginRequestBody).unwrap();
-        localStorage.setItem('sessionToken', result.session_token)
+        setSessionToken(result.session_token);
 
         // Send user to next route
         window.location.href = redirectPath;

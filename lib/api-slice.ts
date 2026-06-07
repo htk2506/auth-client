@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { LoginUserRequestBody, LoginUserResponseBody, User } from './types';
+import { getSessionToken } from './session-token-management';
 
 /**
  * Generates a value for an Authorization header using a bearer token.
@@ -7,10 +8,10 @@ import { LoginUserRequestBody, LoginUserResponseBody, User } from './types';
  */
 const generateAuthorizationHeader = () => {
     // Retrieve session token from local storage
-    const sessionToken = localStorage.getItem('sessionToken');
+    const sessionToken = getSessionToken();
 
     // Make sure a session token was retrieved
-    if (sessionToken === null || sessionToken.trim().length === 0) {
+    if (sessionToken === null) {
         throw new Error("No session token found.");
     }
 
