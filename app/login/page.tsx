@@ -2,7 +2,8 @@
 import { usePostLoginRequestMutation } from '@/lib/api-slice';
 import { setSessionToken } from '@/lib/session-token-management';
 import { LoginUserRequestBody } from '@/lib/types';
-import { Alert, Box, Button, CircularProgress, Link, TextField, Typography } from '@mui/material';
+import { VisibilityOff, Visibility } from '@mui/icons-material';
+import { Alert, Box, Button, CircularProgress, IconButton, InputAdornment, Link, TextField, Typography } from '@mui/material';
 import { useFormik } from 'formik';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useMemo, useState } from 'react';
@@ -20,7 +21,11 @@ const validationSchema = yup.object({
 export function LoginForm({ }: Readonly<{}>) {
   const searchParams = useSearchParams();
   const [loginErrorMessage, setLoginErrorMessage] = useState<string>('');
+  const [showPassword, setShowPassword] = useState(false);
   const [postLoginRequest, { isLoading, isError }] = usePostLoginRequestMutation();
+
+  // Toggles whether or not to show password plain text
+  const handleClickShowPassword = () => setShowPassword((showPassword) => !showPassword);
 
   // The path that user should be sent to after successful login
   const redirectPath = useMemo(() => {
@@ -84,12 +89,25 @@ export function LoginForm({ }: Readonly<{}>) {
               id='password'
               name='password'
               label='Password'
-              type='password'
+              type={showPassword ? 'text' : 'password'}
               value={formik.values.password}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               error={formik.touched.password && Boolean(formik.errors.password)}
               helperText={formik.touched.password && formik.errors.password || ' '}
+              slotProps={{
+                input: {
+                  endAdornment:
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                      >
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                }
+              }}
             />
 
             {isLoading &&
