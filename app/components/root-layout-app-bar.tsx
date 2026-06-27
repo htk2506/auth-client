@@ -2,11 +2,11 @@
 import { useGetCurrentUserQuery } from '@/lib/api-slice';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import MenuIcon from '@mui/icons-material/Menu';
-import { AppBar, Button, IconButton, Toolbar, Tooltip, Typography } from '@mui/material';
+import { AppBar, Box, Button, IconButton, Popover, Toolbar, Typography } from '@mui/material';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useMemo, useState } from 'react';
 
-function ToolBarContent() {
+function LoginContent() {
     const LOGIN_BASE_PATH = '/login'
     const currentPath = usePathname();
     const searchParams = useSearchParams();
@@ -18,6 +18,7 @@ function ToolBarContent() {
         error: getCurrentUserError,
     } = useGetCurrentUserQuery()
     const [loginButtonRedirectPath, setLoginButtonRedirectPath] = useState<string>(LOGIN_BASE_PATH); // Where the login button should redirect to
+    const [popoverAnchorEl, setPopoverAnchorEl] = useState<HTMLButtonElement | null>(null);
 
     // The current URL the browser is at
     const currentUrl = useMemo(() => {
@@ -52,20 +53,54 @@ function ToolBarContent() {
         setLoginButtonRedirectPath(loginRedirectPath);
     }, [currentPath, redirectPathFromQuery, currentPathAndParams]);
 
+    // Sets the popover's anchor
+    const handleClickShowPopover = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setPopoverAnchorEl(event.currentTarget);
+    };
+
+    // Removes the popover's anchor
+    const handleClosePopover = () => {
+        setPopoverAnchorEl(null);
+    };
+
+    const isPopoverOpen = Boolean(popoverAnchorEl);
+    const popoverId = isPopoverOpen ? 'account-popover' : undefined;
+
     // Renders the login/logout button and indicator for whether user is currently logged in
     const renderLoginFeatures = () => {
         if (getCurrentUserIsLoading) { return; }
 
-        // TODO: Make logout button do logout functionality
         if (getCurrentUserIsSuccess) {
             return (
                 <>
-                    <Tooltip title={currentUser.username} placement='bottom' enterTouchDelay={50} arrow>
+                    <IconButton
+                        onClick={handleClickShowPopover}
+                        color='inherit'
+                        size='large'
+                        edge='end'
+                    >
                         <AccountCircleIcon />
-                    </Tooltip>
-                    <Button href={loginButtonRedirectPath} color='inherit'>
-                        Logout
-                    </Button>
+                    </IconButton>
+
+                    <Popover
+                        id={popoverId}
+                        open={isPopoverOpen}
+                        anchorEl={popoverAnchorEl}
+                        onClose={handleClosePopover}
+                        anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'left',
+                        }}
+                    >
+                        <Box className='p-2'>
+                            <Typography >{currentUser.username}</Typography>
+
+                            {/* TODO: Make logout button do logout functionality*/}
+                            <Button href={loginButtonRedirectPath} >
+                                Logout
+                            </Button>
+                        </Box>
+                    </Popover>
                 </>
             );
         } else {
@@ -79,21 +114,6 @@ function ToolBarContent() {
 
     return (
         <>
-            {/* TODO: Add functionality to menu button */}
-            <IconButton
-                size='large'
-                edge='start'
-                color='inherit'
-                aria-label='menu'
-                className='mr-2'
-            >
-                <MenuIcon />
-            </IconButton>
-
-            <Typography variant='h6' className='grow'>
-                Welcome
-            </Typography>
-
             {renderLoginFeatures()}
         </>
     );
@@ -103,9 +123,26 @@ export function RootLayoutAppBar() {
     return (
         <AppBar position='sticky'>
             <Toolbar variant='dense'>
+
+                {/* TODO: Add functionality to menu button */}
+                <IconButton
+                    size='large'
+                    edge='start'
+                    color='inherit'
+                    aria-label='menu'
+                    className='mr-2'
+                >
+                    <MenuIcon />
+                </IconButton>
+
+                <Typography variant='h6' className='grow'>
+                    Welcome
+                </Typography>
+
                 <Suspense>
-                    <ToolBarContent />
+                    <LoginContent />
                 </Suspense>
+
             </Toolbar>
         </AppBar>
     );
