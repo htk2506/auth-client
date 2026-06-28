@@ -21,7 +21,7 @@ const validationSchema = yup.object({
 export function LoginForm({ }: Readonly<{}>) {
   const searchParams = useSearchParams();
   const [loginErrorMessage, setLoginErrorMessage] = useState<string>('');
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   const [postLoginRequest, { isLoading, isError }] = usePostLoginRequestMutation();
 
   // Toggles whether or not to show password plain text
