@@ -1,20 +1,19 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { LoginUserRequestBody, LoginUserResponseBody, User } from './types'
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { getSessionToken, hasUnexpiredSessionToken } from './session-token-management';
+import { LoginUserRequestBody, LoginUserResponseBody, User } from './types';
 
 /**
  * Generates a value for an Authorization header using a bearer token.
  * @returns A string to use as Authorization header value.
  */
 const generateAuthorizationHeader = () => {
-    // Retrieve session token from local storage
-    const sessionToken = localStorage.getItem('sessionToken');
-
-    // Make sure a session token was retrieved
-    if (sessionToken === null ||sessionToken.trim().length === 0) {
-        throw new Error("No session token found.");
+    // Make sure there's an unexpired session token.
+    if (!hasUnexpiredSessionToken()) {
+        throw new Error("No unexpired session token found.");
     }
 
-    // TODO: Check if token is expired
+    // Retrieve session token from local storage
+    const sessionToken = getSessionToken();
 
     // Return the header
     return `Bearer ${sessionToken}`;
@@ -30,8 +29,8 @@ export const apiSlice = createApi({
             query: () => ({
                 url: `v1/users/me`,
                 headers: {
-                    Authorization: generateAuthorizationHeader(),
-                }
+                    ['Authorization']: generateAuthorizationHeader(),
+                },
             }),
             providesTags: ['CurrentUser'],
         }),
