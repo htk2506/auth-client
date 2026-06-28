@@ -2,7 +2,7 @@
 import { useGetCurrentUserQuery } from '@/lib/api-slice';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import MenuIcon from '@mui/icons-material/Menu';
-import { AppBar, Box, Button, IconButton, Popover, Toolbar, Typography } from '@mui/material';
+import { AppBar, Box, Button, CircularProgress, IconButton, Popover, Toolbar, Typography } from '@mui/material';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useMemo, useState } from 'react';
 
@@ -68,7 +68,11 @@ function LoginContent() {
 
     // Renders the login/logout button and indicator for whether user is currently logged in
     const renderLoginFeatures = () => {
-        if (getCurrentUserIsLoading) { return; }
+        if (getCurrentUserIsLoading) {
+            return (
+                <CircularProgress aria-label='Loading…' color='inherit' size='20px' />
+            );
+        }
 
         if (getCurrentUserIsSuccess) {
             return (
@@ -139,7 +143,7 @@ export function RootLayoutAppBar() {
                     Welcome
                 </Typography>
 
-                <Suspense>
+                <Suspense fallback={<CircularProgress aria-label='Loading…' color='inherit' size='20px' />}>
                     <LoginContent />
                 </Suspense>
 
