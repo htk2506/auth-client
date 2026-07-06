@@ -1,5 +1,6 @@
 'use client'
 import { useGetCurrentUserQuery, usePostLogoutRequestMutation } from '@/lib/api-slice';
+import { removeSessionToken } from '@/lib/session-token-management';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import MenuIcon from '@mui/icons-material/Menu';
 import { AppBar, Box, Button, CircularProgress, IconButton, Popover, Toolbar, Typography } from '@mui/material';
@@ -107,6 +108,8 @@ function LoginContent() {
 
                             <Button onClick={async () => {
                                 await postLogoutRequest();
+                                removeSessionToken();
+                                window.location.href = LOGIN_BASE_PATH;
                             }}>
                                 Logout
                             </Button>
