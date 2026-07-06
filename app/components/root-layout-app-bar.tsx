@@ -1,5 +1,5 @@
 'use client'
-import { useGetCurrentUserQuery } from '@/lib/api-slice';
+import { useGetCurrentUserQuery, usePostLogoutRequestMutation } from '@/lib/api-slice';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import MenuIcon from '@mui/icons-material/Menu';
 import { AppBar, Box, Button, CircularProgress, IconButton, Popover, Toolbar, Typography } from '@mui/material';
@@ -16,7 +16,13 @@ function LoginContent() {
         isSuccess: getCurrentUserIsSuccess,
         isError: getCurrentUserIsError,
         error: getCurrentUserError,
-    } = useGetCurrentUserQuery()
+    } = useGetCurrentUserQuery();
+    const [postLogoutRequest,
+        {
+            isLoading: postLogoutRequestIsLoading,
+            isError: postLogoutRequestIsError
+        }
+    ] = usePostLogoutRequestMutation();
     const [loginButtonRedirectPath, setLoginButtonRedirectPath] = useState<string>(LOGIN_BASE_PATH); // Where the login button should redirect to
     const [popoverAnchorEl, setPopoverAnchorEl] = useState<HTMLButtonElement | null>(null);
 
@@ -99,8 +105,9 @@ function LoginContent() {
                         <Box className='p-2'>
                             <Typography >{currentUser.username}</Typography>
 
-                            {/* TODO: Make logout button do logout functionality*/}
-                            <Button href={loginButtonRedirectPath} >
+                            <Button onClick={async () => {
+                                await postLogoutRequest();
+                            }}>
                                 Logout
                             </Button>
                         </Box>

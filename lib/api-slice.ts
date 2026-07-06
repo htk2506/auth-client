@@ -35,10 +35,20 @@ export const apiSlice = createApi({
             providesTags: ['CurrentUser'],
         }),
         postLoginRequest: builder.mutation<LoginUserResponseBody, LoginUserRequestBody>({
-            query: (loginRequest) => ({
+            query: (loginRequest: LoginUserRequestBody) => ({
                 url: `v1/sessions/login`,
                 method: 'POST',
                 body: loginRequest,
+            }),
+            invalidatesTags: ['CurrentUser'],
+        }),
+        postLogoutRequest: builder.mutation<LoginUserResponseBody, void>({
+            query: () => ({
+                url: `v1/sessions/logout`,
+                method: 'POST',
+                headers: {
+                    ['Authorization']: generateAuthorizationHeader(),
+                },
             }),
             invalidatesTags: ['CurrentUser'],
         }),
@@ -49,4 +59,5 @@ export const apiSlice = createApi({
 export const {
     useGetCurrentUserQuery,
     usePostLoginRequestMutation,
+    usePostLogoutRequestMutation,
 } = apiSlice
