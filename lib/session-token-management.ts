@@ -11,6 +11,13 @@ export function setSessionToken(sessionToken: string): void {
 }
 
 /**
+ * Removes the session token.
+ */
+export function removeSessionToken(): void {
+    localStorage.removeItem(SESSION_TOKEN_LOCAL_STORAGE_KEY);
+}
+
+/**
  * Retrieves the session token for authentication.
  * @returns The current session token if there is one and null otherwise.
  */
