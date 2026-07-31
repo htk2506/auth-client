@@ -32,9 +32,9 @@ export function UserForm({ user }: UserFormProps) {
 
     const formik = useFormik({
         initialValues: {
-            username: user?.username,
-            email: user?.email,
-            note: user?.note,
+            username: user?.username || '',
+            email: user?.email || '',
+            note: user?.note || '',
         },
         validationSchema: validationSchema,
         onSubmit: async (values) => {
@@ -58,22 +58,15 @@ export function UserForm({ user }: UserFormProps) {
                             Profile
                         </Typography>
 
-                        <TextField
-                            fullWidth
-                            disabled
-                            id='user-id'
-                            name='user-id'
-                            label='User ID'
-                            value={user?.id}
-                            slotProps={{
-                                input: {
-                                    readOnly: true,
-                                },
-                            }}
-                            autoComplete='off'
-                            data-1p-ignore data-lpignore="true" data-protonpass-ignore="true"
-                            helperText={' '}
-                        />
+
+                        <Box className='flex flex-row items-center gap-2 mb-4 sm:px-2'>
+                            <Typography>
+                                ID:
+                            </Typography>
+                            <Typography className='rounded-sm bg-current/10 py-1 px-2'>
+                                {user.id}
+                            </Typography>
+                        </Box>
 
                         <TextField
                             fullWidth
@@ -83,11 +76,35 @@ export function UserForm({ user }: UserFormProps) {
                             value={formik.values.username}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.username && Boolean(formik.errors.username)}
-                            helperText={formik.touched.username && formik.errors.username || ' '}
-                            autoComplete='off'
+                            error={Boolean(formik.errors.username)}
+                            helperText={formik.errors.username || ' '}
                         />
 
+                        <TextField
+                            fullWidth
+                            id='email'
+                            name='email'
+                            label='Email'
+                            value={formik.values.email}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={Boolean(formik.errors.email)}
+                            helperText={formik.errors.email || ' '}
+                        />
+
+                        <TextField
+                            fullWidth
+                            multiline
+                            minRows={4}
+                            id='note'
+                            name='note'
+                            label='Note'
+                            value={formik.values.note}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={Boolean(formik.errors.note)}
+                            helperText={formik.errors.note || ' '}
+                        />
 
                         {/* {isLoading &&
                             <CircularProgress aria-label='Loading…' className='mx-auto mb-5' />
