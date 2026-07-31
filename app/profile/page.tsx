@@ -2,6 +2,8 @@
 'use client'
 import { useGetCurrentUserQuery } from '@/lib/api-slice';
 import { User } from '@/lib/types';
+import DeleteIcon from '@mui/icons-material/Delete';
+import SaveIcon from '@mui/icons-material/Save';
 import { Alert, Box, Button, CircularProgress, Link, TextField, Typography } from '@mui/material';
 import { SerializedError } from '@reduxjs/toolkit';
 import { useFormik } from 'formik';
@@ -24,11 +26,7 @@ interface UserFormProps {
 }
 
 export function UserForm({ user }: UserFormProps) {
-    const [isEditMode, setIsEditMode] = useState<boolean>(false);
     const [updateUserErrorMessage, setUpdateUserErrorMessage] = useState<string>('');
-
-    // Toggles whether or not to show password plain text
-    const handleClickSetEditMode = () => setIsEditMode((isEditMode) => !isEditMode);
 
     const formik = useFormik({
         initialValues: {
@@ -116,14 +114,31 @@ export function UserForm({ user }: UserFormProps) {
                             </Alert>
                         } */}
 
-                        <Button
-                            fullWidth
-                            color='primary'
-                            variant='contained'
-                            type='submit'
-                        >
-                            Edit
-                        </Button>
+                        <Box className='flex flex-row items-center gap-2 mb-4'>
+                            <Button
+                                startIcon={<DeleteIcon />}
+                                fullWidth
+                                color='error'
+                                variant='outlined'
+                                disabled={!formik.dirty}
+                                onClick={() => {
+                                    formik.resetForm();
+                                }}
+                            >
+                                Discard Changes
+                            </Button>
+
+                            <Button
+                                startIcon={<SaveIcon />}
+                                fullWidth
+                                color='primary'
+                                variant='contained'
+                                type='submit'
+                                disabled={!formik.dirty}
+                            >
+                                Save Changes
+                            </Button>
+                        </Box>
                     </Box>
                 </form>
             </Box>
