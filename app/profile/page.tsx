@@ -114,7 +114,7 @@ export function UserForm({ user }: UserFormProps) {
     );
 }
 
-export default function SettingsPage() {
+export default function ProfilePage() {
     const {
         data: currentUser,
         isLoading: getCurrentUserIsLoading,
