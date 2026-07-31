@@ -18,7 +18,7 @@ const validationSchema = yup.object({
     .required('Password is required.'),
 });
 
-export function LoginForm({ }: Readonly<{}>) {
+function LoginForm({ }: Readonly<{}>) {
   const searchParams = useSearchParams();
   const [loginErrorMessage, setLoginErrorMessage] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
