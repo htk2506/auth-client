@@ -2,7 +2,7 @@
 import { usePostLoginRequestMutation } from '@/lib/api-slice';
 import { setSessionToken } from '@/lib/session-token-management';
 import { LoginUserRequestBody } from '@/lib/types';
-import { VisibilityOff, Visibility } from '@mui/icons-material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { Alert, Box, Button, CircularProgress, IconButton, InputAdornment, Link, TextField, Typography } from '@mui/material';
 import { useFormik } from 'formik';
 import { useSearchParams } from 'next/navigation';
