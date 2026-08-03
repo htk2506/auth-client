@@ -34,6 +34,7 @@ export function UserForm({ user }: UserFormProps) {
     }] = usePutUpdateUserRequestMutation();
 
     const formik = useFormik({
+        enableReinitialize: true,
         initialValues: {
             username: user?.username || '',
             email: user?.email || '',
