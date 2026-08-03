@@ -53,7 +53,13 @@ export function UserForm({ user }: UserFormProps) {
                 const result = await putUpdateUserRequest(updateUserRequest).unwrap();
 
             } catch (err: any) {
-                setUpdateUserErrorMessage(err.data.detail || JSON.stringify(err.data.errors));
+                const errorData = {
+                    username: err.data.errors.Username || null,
+                    email: err.data.errors.Email || null,
+                    note: err.data.errors.Note || null,
+                }
+                formik.setErrors(errorData);
+                setUpdateUserErrorMessage(err.data.detail);
                 console.error(`Failed to  update: ${JSON.stringify(err)}`);
             }
         },
@@ -153,7 +159,7 @@ export function UserForm({ user }: UserFormProps) {
                                 color='primary'
                                 variant='contained'
                                 type='submit'
-                                disabled={!formik.dirty}
+                                disabled={!formik.dirty || !formik.isValid}
                             >
                                 Save Changes
                             </Button>
