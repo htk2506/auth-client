@@ -1,7 +1,7 @@
 
 'use client'
-import { useGetCurrentUserQuery } from '@/lib/api-slice';
-import { User } from '@/lib/types';
+import { useGetCurrentUserQuery, usePutUpdateUserRequestMutation } from '@/lib/api-slice';
+import { UpdateUserRequestBody, User } from '@/lib/types';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SaveIcon from '@mui/icons-material/Save';
 import { Alert, Box, Button, CircularProgress, Link, TextField, Typography } from '@mui/material';
@@ -27,6 +27,11 @@ interface UserFormProps {
 
 export function UserForm({ user }: UserFormProps) {
     const [updateUserErrorMessage, setUpdateUserErrorMessage] = useState<string>('');
+    const [putUpdateUserRequest, {
+        isLoading: updateUserIsLoading,
+        isError: updateUserIsError,
+        isSuccess: updateUserIsSuccess,
+    }] = usePutUpdateUserRequestMutation();
 
     const formik = useFormik({
         initialValues: {
@@ -37,10 +42,17 @@ export function UserForm({ user }: UserFormProps) {
         validationSchema: validationSchema,
         onSubmit: async (values) => {
             try {
-                // TODO: Trigger call to update
+                const updateUserRequest: UpdateUserRequestBody = {
+                    username: values.username,
+                    email: values.email,
+                    note: values.note,
+                }
+
+                // Trigger call to update
+                const result = await putUpdateUserRequest(updateUserRequest).unwrap();
 
             } catch (err: any) {
-                setUpdateUserErrorMessage(err.data.detail);
+                setUpdateUserErrorMessage(err.data.detail || JSON.stringify(err.data.errors));
                 console.error(`Failed to  update: ${JSON.stringify(err)}`);
             }
         },
@@ -104,15 +116,21 @@ export function UserForm({ user }: UserFormProps) {
                             helperText={formik.errors.note || ' '}
                         />
 
-                        {/* {isLoading &&
+                        {updateUserIsLoading &&
                             <CircularProgress aria-label='Loading…' className='mx-auto mb-5' />
                         }
 
-                        {isError &&
-                            <Alert variant='outlined' severity='error' className='mb-5'>
-                                {loginErrorMessage || 'Something went wrong.'}
+                        {updateUserIsSuccess &&
+                            <Alert variant='outlined' severity='info' className='mb-5'>
+                                Update was successful.
                             </Alert>
-                        } */}
+                        }
+
+                        {updateUserIsError &&
+                            <Alert variant='outlined' severity='error' className='mb-5'>
+                                {updateUserErrorMessage || 'Something went wrong.'}
+                            </Alert>
+                        }
 
                         <Box className='flex flex-row items-center gap-2 mb-4'>
                             <Button
