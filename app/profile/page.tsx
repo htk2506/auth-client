@@ -150,7 +150,7 @@ export function UserForm({ user }: UserFormProps) {
                                     formik.resetForm();
                                 }}
                             >
-                                Discard Changes
+                                Discard
                             </Button>
 
                             <Button
@@ -161,7 +161,7 @@ export function UserForm({ user }: UserFormProps) {
                                 type='submit'
                                 disabled={!formik.dirty || !formik.isValid}
                             >
-                                Save Changes
+                                Save
                             </Button>
                         </Box>
                     </Box>
