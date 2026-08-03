@@ -2,7 +2,7 @@
 import { usePostLoginRequestMutation } from '@/lib/api-slice';
 import { setSessionToken } from '@/lib/session-token-management';
 import { LoginUserRequestBody } from '@/lib/types';
-import { VisibilityOff, Visibility } from '@mui/icons-material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { Alert, Box, Button, CircularProgress, IconButton, InputAdornment, Link, TextField, Typography } from '@mui/material';
 import { useFormik } from 'formik';
 import { useSearchParams } from 'next/navigation';
@@ -18,7 +18,7 @@ const validationSchema = yup.object({
     .required('Password is required.'),
 });
 
-export function LoginForm({ }: Readonly<{}>) {
+function LoginForm({ }: Readonly<{}>) {
   const searchParams = useSearchParams();
   const [loginErrorMessage, setLoginErrorMessage] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -64,7 +64,7 @@ export function LoginForm({ }: Readonly<{}>) {
 
   return (
     <Box className='flex flex-col items-center'>
-      <Box className='w-9/10 sm:w-sm p-5 rounded-lg' sx={{ boxShadow: 1 }}>
+      <Box className='w-95/100 sm:w-sm p-5 rounded-lg' sx={{ boxShadow: 1 }}>
         <form onSubmit={formik.handleSubmit}>
           <Box className='flex flex-col gap-2'>
 

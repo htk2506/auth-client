@@ -9,6 +9,7 @@ import { Suspense, useEffect, useMemo, useState } from 'react';
 
 function LoginContent() {
     const LOGIN_BASE_PATH = '/login'
+    const PROFILE_BASE_PATH = '/profile'
     const currentPath = usePathname();
     const searchParams = useSearchParams();
     const {
@@ -103,8 +104,14 @@ function LoginContent() {
                             horizontal: 'left',
                         }}
                     >
-                        <Box className='p-2'>
+                        <Box className='flex flex-col p-2'>
                             <Typography >{currentUser.username}</Typography>
+
+                            <Button onClick={async () => {
+                                window.location.href = PROFILE_BASE_PATH;
+                            }}>
+                                Profile
+                            </Button>
 
                             <Button onClick={async () => {
                                 await postLogoutRequest();
