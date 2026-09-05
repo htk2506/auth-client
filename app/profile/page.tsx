@@ -45,7 +45,7 @@ export function UserForm({ user }: UserFormProps) {
             try {
                 const updateUserRequest: UpdateUserRequestBody = {
                     username: values.username,
-                    email: values.email,
+                    email: values.email.length > 0 ? values.email : null, // Send null in place of empty string
                     note: values.note,
                 }
 
