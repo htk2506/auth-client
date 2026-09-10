@@ -13,7 +13,7 @@ import * as yup from 'yup';
 const validationSchema = yup.object({
     username: yup
         .string()
-        .required('Username is required.'),
+        .required(),
     email: yup
         .string()
         .email(),
