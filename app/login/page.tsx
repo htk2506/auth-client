@@ -56,8 +56,9 @@ function LoginForm({ }: Readonly<{}>) {
         // Send user to next route
         window.location.href = redirectPath;
       } catch (err: any) {
-        setLoginErrorMessage(err.data.detail);
         console.error(`Failed to  login: ${JSON.stringify(err)}`);
+
+        setLoginErrorMessage(err?.data?.detail);
       }
     },
   });
