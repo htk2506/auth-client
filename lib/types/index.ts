@@ -1,3 +1,5 @@
+export * from './create-user-request-body'
+export * from './create-user-response-body'
 export * from './login-user-request-body'
 export * from './login-user-response-body'
 export * from './message-response-body'
@@ -5,3 +7,4 @@ export * from './session-token-payload'
 export * from './update-user-request-body'
 export * from './update-user-response-body'
 export * from './user-model'
+
