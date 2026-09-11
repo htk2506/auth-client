@@ -19,6 +19,8 @@ const validationSchema = yup.object({
 });
 
 function LoginForm({ }: Readonly<{}>) {
+  const CREATE_ACCOUNT_BASE_PATH = '/create-account'
+
   const searchParams = useSearchParams();
   const [loginErrorMessage, setLoginErrorMessage] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -137,16 +139,15 @@ function LoginForm({ }: Readonly<{}>) {
                 Forgot password?
               </Link>
 
-              {/* TODO: Fix link */}
-              <Link href='/'>
+              <Link href={CREATE_ACCOUNT_BASE_PATH}>
                 Create account
               </Link>
             </Box>
 
           </Box>
         </form>
-      </Box>
-    </Box>
+      </Box >
+    </Box >
   );
 }
 
