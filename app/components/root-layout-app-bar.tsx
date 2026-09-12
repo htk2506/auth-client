@@ -3,8 +3,10 @@ import { useGetCurrentUserQuery, usePostLogoutRequestMutation } from '@/lib/api-
 import { PATHS } from '@/lib/paths';
 import { removeSessionToken } from '@/lib/session-token-management';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import HomeIcon from '@mui/icons-material/Home';
 import MenuIcon from '@mui/icons-material/Menu';
-import { AppBar, Box, Button, CircularProgress, IconButton, Popover, Toolbar, Typography } from '@mui/material';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import { AppBar, Box, Button, CircularProgress, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Popover, Toolbar, Typography } from '@mui/material';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useMemo, useState } from 'react';
 
@@ -139,31 +141,67 @@ function LoginContent() {
     );
 }
 
-export function RootLayoutAppBar() {
+function MenuDrawerContent() {
     return (
-        <AppBar position='sticky'>
-            <Toolbar variant='dense'>
+        <Box>
+            <List>
+                <ListItem key={'home'} disablePadding>
+                    <ListItemButton href={PATHS.ROOT}>
+                        <ListItemIcon>
+                            <HomeIcon />
+                        </ListItemIcon>
+                        <ListItemText primary='Home' />
+                    </ListItemButton>
+                </ListItem>
 
-                {/* TODO: Add functionality to menu button */}
-                <IconButton
-                    size='large'
-                    edge='start'
-                    color='inherit'
-                    aria-label='menu'
-                    className='mr-2'
-                >
-                    <MenuIcon />
-                </IconButton>
+                <ListItem key={'create-account'} disablePadding>
+                    <ListItemButton href={PATHS.CREATE_ACCOUNT}>
+                        <ListItemIcon>
+                            <PersonAddIcon />
+                        </ListItemIcon>
+                        <ListItemText primary='New Account' />
+                    </ListItemButton>
+                </ListItem>
+            </List>
+        </Box>
+    );
 
-                <Typography variant='h6' className='grow'>
-                    Welcome
-                </Typography>
+}
 
-                <Suspense fallback={<CircularProgress aria-label='Loading…' color='inherit' size='20px' />}>
-                    <LoginContent />
-                </Suspense>
+export function RootLayoutAppBar() {
+    const [drawerIsOpen, setDrawerIsOpen] = useState(false);
+    const toggleDrawer = (newOpen: boolean) => () => { setDrawerIsOpen(newOpen); };
 
-            </Toolbar>
-        </AppBar>
+    return (
+        <>
+            <Drawer open={drawerIsOpen} onClose={toggleDrawer(false)}>
+                <MenuDrawerContent />
+            </Drawer>
+
+            <AppBar position='sticky'>
+                <Toolbar variant='dense'>
+
+                    <IconButton
+                        size='large'
+                        edge='start'
+                        color='inherit'
+                        aria-label='menu'
+                        className='mr-2'
+                        onClick={toggleDrawer(true)}
+                    >
+                        <MenuIcon />
+                    </IconButton>
+
+                    <Typography variant='h6' className='grow'>
+                        Welcome
+                    </Typography>
+
+                    <Suspense fallback={<CircularProgress aria-label='Loading…' color='inherit' size='20px' />}>
+                        <LoginContent />
+                    </Suspense>
+
+                </Toolbar>
+            </AppBar>
+        </>
     );
 }
