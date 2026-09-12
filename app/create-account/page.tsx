@@ -3,8 +3,9 @@
 import { usePostCreateUserRequestMutation } from '@/lib/api-slice';
 import { PATHS } from '@/lib/paths';
 import { CreateUserRequestBody } from '@/lib/types';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import CreateIcon from '@mui/icons-material/Create';
-import { Alert, Box, Button, CircularProgress, Link, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, CircularProgress, IconButton, InputAdornment, Link, TextField, Typography } from '@mui/material';
 import { useFormik } from 'formik';
 import { useState } from 'react';
 import * as yup from 'yup';
@@ -34,6 +35,10 @@ export default function CreateUserForm() {
         isError: createUserIsError,
         isSuccess: createUserIsSuccess,
     }] = usePostCreateUserRequestMutation();
+    const [showPassword, setShowPassword] = useState<boolean>(false);
+
+    // Toggles whether or not to show password plain text
+    const handleClickShowPassword = () => setShowPassword((showPassword) => !showPassword);
 
     const formik = useFormik({
         enableReinitialize: true,
@@ -112,11 +117,25 @@ export default function CreateUserForm() {
                             id='password'
                             name='password'
                             label='Password'
+                            type={showPassword ? 'text' : 'password'}
                             value={formik.values.password}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             error={formik.touched.password && Boolean(formik.errors.password)}
                             helperText={formik.touched.password && formik.errors.password || ' '}
+                            slotProps={{
+                                input: {
+                                    endAdornment:
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                aria-label="toggle password visibility"
+                                                onClick={handleClickShowPassword}
+                                            >
+                                                {showPassword ? <Visibility /> : <VisibilityOff />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                }
+                            }}
                         />
 
                         <TextField
@@ -124,11 +143,25 @@ export default function CreateUserForm() {
                             id='passwordConfirmation'
                             name='passwordConfirmation'
                             label='Confirm Password'
+                            type={showPassword ? 'text' : 'password'}
                             value={formik.values.passwordConfirmation}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             error={formik.touched.passwordConfirmation && Boolean(formik.errors.passwordConfirmation)}
                             helperText={formik.touched.passwordConfirmation && formik.errors.passwordConfirmation || ' '}
+                            slotProps={{
+                                input: {
+                                    endAdornment:
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                aria-label="toggle password visibility"
+                                                onClick={handleClickShowPassword}
+                                            >
+                                                {showPassword ? <Visibility /> : <VisibilityOff />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                }
+                            }}
                         />
 
                         <TextField
