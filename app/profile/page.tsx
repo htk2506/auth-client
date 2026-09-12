@@ -1,6 +1,7 @@
 
 'use client'
 import { useGetCurrentUserQuery, usePutUpdateUserRequestMutation } from '@/lib/api-slice';
+import { PATHS } from '@/lib/paths';
 import { UpdateUserRequestBody, User } from '@/lib/types';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SaveIcon from '@mui/icons-material/Save';
@@ -13,7 +14,7 @@ import * as yup from 'yup';
 const validationSchema = yup.object({
     username: yup
         .string()
-        .required('Username is required.'),
+        .required(),
     email: yup
         .string()
         .email(),
@@ -53,14 +54,16 @@ export function UserForm({ user }: UserFormProps) {
                 const result = await putUpdateUserRequest(updateUserRequest).unwrap();
 
             } catch (err: any) {
+                console.error(`Failed to  update: ${JSON.stringify(err)}`);
+
+                setUpdateUserErrorMessage(err?.data?.detail);
+
                 const errorData = {
-                    username: err.data.errors.Username || null,
-                    email: err.data.errors.Email || null,
-                    note: err.data.errors.Note || null,
+                    username: err?.data?.errors?.Username || null,
+                    email: err?.data?.errors?.Email || null,
+                    note: err?.data?.errors?.Note || null,
                 }
                 formik.setErrors(errorData);
-                setUpdateUserErrorMessage(err.data.detail);
-                console.error(`Failed to  update: ${JSON.stringify(err)}`);
             }
         },
     });
@@ -194,7 +197,7 @@ export default function ProfilePage() {
                         {(getCurrentUserError as SerializedError)?.message || 'Something went wrong.'}
                     </Alert>
 
-                    <Link href='/login'>
+                    <Link href={PATHS.LOGIN}>
                         Login
                     </Link>
 

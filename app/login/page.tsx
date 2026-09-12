@@ -1,5 +1,6 @@
 'use client'
 import { usePostLoginRequestMutation } from '@/lib/api-slice';
+import { PATHS } from '@/lib/paths';
 import { setSessionToken } from '@/lib/session-token-management';
 import { LoginUserRequestBody } from '@/lib/types';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
@@ -32,7 +33,7 @@ function LoginForm({ }: Readonly<{}>) {
     // Get the query param
     const redirectPathQueryParam = decodeURIComponent(searchParams.get('redirect_path') ?? '');
     // If query param isn't a path, return to root
-    return redirectPathQueryParam?.startsWith('/') ? redirectPathQueryParam : '/';
+    return redirectPathQueryParam?.startsWith('/') ? redirectPathQueryParam : PATHS.ROOT;
   }, [searchParams])
 
   const formik = useFormik({
@@ -56,8 +57,9 @@ function LoginForm({ }: Readonly<{}>) {
         // Send user to next route
         window.location.href = redirectPath;
       } catch (err: any) {
-        setLoginErrorMessage(err.data.detail);
         console.error(`Failed to  login: ${JSON.stringify(err)}`);
+
+        setLoginErrorMessage(err?.data?.detail);
       }
     },
   });
@@ -131,21 +133,19 @@ function LoginForm({ }: Readonly<{}>) {
 
             <Box className='mt-5 flex flex-col gap-2 sm:flex-row sm:justify-between'>
 
-              {/* TODO: Fix link */}
-              <Link href='/'>
+              <Link href={PATHS.FORGOT_PASSWORD}>
                 Forgot password?
               </Link>
 
-              {/* TODO: Fix link */}
-              <Link href='/'>
+              <Link href={PATHS.CREATE_ACCOUNT}>
                 Create account
               </Link>
             </Box>
 
           </Box>
         </form>
-      </Box>
-    </Box>
+      </Box >
+    </Box >
   );
 }
 
