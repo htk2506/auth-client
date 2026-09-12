@@ -1,5 +1,6 @@
 'use client'
 import { usePostLoginRequestMutation } from '@/lib/api-slice';
+import { PATHS } from '@/lib/paths';
 import { setSessionToken } from '@/lib/session-token-management';
 import { LoginUserRequestBody } from '@/lib/types';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
@@ -19,8 +20,6 @@ const validationSchema = yup.object({
 });
 
 function LoginForm({ }: Readonly<{}>) {
-  const CREATE_ACCOUNT_BASE_PATH = '/create-account'
-
   const searchParams = useSearchParams();
   const [loginErrorMessage, setLoginErrorMessage] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -34,7 +33,7 @@ function LoginForm({ }: Readonly<{}>) {
     // Get the query param
     const redirectPathQueryParam = decodeURIComponent(searchParams.get('redirect_path') ?? '');
     // If query param isn't a path, return to root
-    return redirectPathQueryParam?.startsWith('/') ? redirectPathQueryParam : '/';
+    return redirectPathQueryParam?.startsWith('/') ? redirectPathQueryParam : PATHS.ROOT;
   }, [searchParams])
 
   const formik = useFormik({
@@ -134,12 +133,11 @@ function LoginForm({ }: Readonly<{}>) {
 
             <Box className='mt-5 flex flex-col gap-2 sm:flex-row sm:justify-between'>
 
-              {/* TODO: Fix link */}
-              <Link href='/'>
+              <Link href={PATHS.FORGOT_PASSWORD}>
                 Forgot password?
               </Link>
 
-              <Link href={CREATE_ACCOUNT_BASE_PATH}>
+              <Link href={PATHS.CREATE_ACCOUNT}>
                 Create account
               </Link>
             </Box>

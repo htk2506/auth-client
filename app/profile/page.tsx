@@ -1,6 +1,7 @@
 
 'use client'
 import { useGetCurrentUserQuery, usePutUpdateUserRequestMutation } from '@/lib/api-slice';
+import { PATHS } from '@/lib/paths';
 import { UpdateUserRequestBody, User } from '@/lib/types';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SaveIcon from '@mui/icons-material/Save';
@@ -196,7 +197,7 @@ export default function ProfilePage() {
                         {(getCurrentUserError as SerializedError)?.message || 'Something went wrong.'}
                     </Alert>
 
-                    <Link href='/login'>
+                    <Link href={PATHS.LOGIN}>
                         Login
                     </Link>
 

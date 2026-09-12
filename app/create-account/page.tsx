@@ -1,6 +1,7 @@
 
 'use client'
 import { usePostCreateUserRequestMutation } from '@/lib/api-slice';
+import { PATHS } from '@/lib/paths';
 import { CreateUserRequestBody } from '@/lib/types';
 import CreateIcon from '@mui/icons-material/Create';
 import { Alert, Box, Button, CircularProgress, Link, TextField, Typography } from '@mui/material';
@@ -177,7 +178,7 @@ export default function CreateUserForm() {
                         }
 
                         <Box className='flex flex-col flex-row justify-center'>
-                            <Link href={'/login'}>
+                            <Link href={PATHS.LOGIN}>
                                 Login
                             </Link>
                         </Box>

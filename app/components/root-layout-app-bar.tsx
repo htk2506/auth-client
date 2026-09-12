@@ -1,5 +1,6 @@
 'use client'
 import { useGetCurrentUserQuery, usePostLogoutRequestMutation } from '@/lib/api-slice';
+import { PATHS } from '@/lib/paths';
 import { removeSessionToken } from '@/lib/session-token-management';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -8,8 +9,6 @@ import { usePathname, useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useMemo, useState } from 'react';
 
 function LoginContent() {
-    const LOGIN_BASE_PATH = '/login'
-    const PROFILE_BASE_PATH = '/profile'
     const currentPath = usePathname();
     const searchParams = useSearchParams();
     const {
@@ -25,7 +24,7 @@ function LoginContent() {
             isError: postLogoutRequestIsError
         }
     ] = usePostLogoutRequestMutation();
-    const [loginButtonRedirectPath, setLoginButtonRedirectPath] = useState<string>(LOGIN_BASE_PATH); // Where the login button should redirect to
+    const [loginButtonRedirectPath, setLoginButtonRedirectPath] = useState<string>(PATHS.LOGIN); // Where the login button should redirect to
     const [popoverAnchorEl, setPopoverAnchorEl] = useState<HTMLButtonElement | null>(null);
 
     // The current URL the browser is at
@@ -46,7 +45,7 @@ function LoginContent() {
         // Get the query param
         const redirectPathQueryParam = decodeURIComponent(searchParams.get('redirect_path') ?? '');
         // If query param isn't a path, return to root
-        return redirectPathQueryParam?.startsWith('/') ? redirectPathQueryParam : '/';
+        return redirectPathQueryParam?.startsWith('/') ? redirectPathQueryParam : PATHS.ROOT;
     }, [searchParams])
 
     // Set the path the login button will redirect to
@@ -54,9 +53,9 @@ function LoginContent() {
         // Determine the path browser should redirect to after a successful login.
         // If browser is already on the login page, use the pre-existing redirect_path query parameter.
         // Otherwise, the browser should redirect back to the current page.
-        const redirectPathAfterLogin = (currentPath === LOGIN_BASE_PATH) ? redirectPathFromQuery : currentPathAndParams;
+        const redirectPathAfterLogin = (currentPath === PATHS.LOGIN) ? redirectPathFromQuery : currentPathAndParams;
         // Add the redirect path for following successful login as a query parameter
-        const loginRedirectPath = `${LOGIN_BASE_PATH}?redirect_path=${encodeURIComponent(redirectPathAfterLogin)}`
+        const loginRedirectPath = `${PATHS.LOGIN}?redirect_path=${encodeURIComponent(redirectPathAfterLogin)}`
         // Save path that will be used by the login button
         setLoginButtonRedirectPath(loginRedirectPath);
     }, [currentPath, redirectPathFromQuery, currentPathAndParams]);
@@ -108,7 +107,7 @@ function LoginContent() {
                             <Typography >{currentUser.username}</Typography>
 
                             <Button onClick={async () => {
-                                window.location.href = PROFILE_BASE_PATH;
+                                window.location.href = PATHS.PROFILE;
                             }}>
                                 Profile
                             </Button>
@@ -116,7 +115,7 @@ function LoginContent() {
                             <Button onClick={async () => {
                                 await postLogoutRequest();
                                 removeSessionToken();
-                                window.location.href = LOGIN_BASE_PATH;
+                                window.location.href = PATHS.LOGIN;
                             }}>
                                 Logout
                             </Button>

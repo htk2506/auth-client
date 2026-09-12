@@ -1,4 +1,5 @@
 'use client'
+import { PATHS } from '@/lib/paths';
 import { Box, Link, Typography } from '@mui/material';
 
 export default function NotFound() {
@@ -13,7 +14,7 @@ export default function NotFound() {
                 Could not find the requested page.
             </Typography>
 
-            <Link href='/'>
+            <Link href={PATHS.ROOT}>
                 Home
             </Link>
 
