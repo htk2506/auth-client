@@ -1,38 +1,39 @@
 
 'use client'
-import { useGetCurrentUserQuery, usePutUpdateUserRequestMutation } from '@/lib/api-slice';
+import { useDeleteUserRequestMutation, useGetCurrentUserQuery, usePutUpdateUserRequestMutation } from '@/lib/api-slice';
 import { PATHS } from '@/lib/paths';
 import { UpdateUserRequestBody, User } from '@/lib/types';
+import DangerousIcon from '@mui/icons-material/Dangerous';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SaveIcon from '@mui/icons-material/Save';
-import { Alert, Box, Button, CircularProgress, Link, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, CircularProgress, Divider, Link, TextField, Typography } from '@mui/material';
 import { SerializedError } from '@reduxjs/toolkit';
 import { useFormik } from 'formik';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import * as yup from 'yup';
-
-const validationSchema = yup.object({
-    username: yup
-        .string()
-        .required(),
-    email: yup
-        .string()
-        .email(),
-    note: yup
-        .string(),
-});
 
 interface UserFormProps {
     user: User,
 }
 
-export function UserForm({ user }: UserFormProps) {
+function UserForm({ user }: UserFormProps) {
     const [updateUserErrorMessage, setUpdateUserErrorMessage] = useState<string>('');
     const [putUpdateUserRequest, {
         isLoading: updateUserIsLoading,
         isError: updateUserIsError,
         isSuccess: updateUserIsSuccess,
     }] = usePutUpdateUserRequestMutation();
+
+    const userFormValidationSchema = yup.object({
+        username: yup
+            .string()
+            .required(),
+        email: yup
+            .string()
+            .email(),
+        note: yup
+            .string(),
+    });
 
     const formik = useFormik({
         enableReinitialize: true,
@@ -41,7 +42,7 @@ export function UserForm({ user }: UserFormProps) {
             email: user?.email || '',
             note: user?.note || '',
         },
-        validationSchema: validationSchema,
+        validationSchema: userFormValidationSchema,
         onSubmit: async (values) => {
             try {
                 const updateUserRequest: UpdateUserRequestBody = {
@@ -54,7 +55,7 @@ export function UserForm({ user }: UserFormProps) {
                 const result = await putUpdateUserRequest(updateUserRequest).unwrap();
 
             } catch (err: any) {
-                console.error(`Failed to  update: ${JSON.stringify(err)}`);
+                console.error(`Failed to update: ${JSON.stringify(err)}`);
 
                 setUpdateUserErrorMessage(err?.data?.detail);
 
@@ -69,108 +70,205 @@ export function UserForm({ user }: UserFormProps) {
     });
 
     return (
-        <Box className='flex flex-col items-center'>
-            <Box className='w-95/100 sm:w-sm md:w-md p-5 rounded-lg' sx={{ boxShadow: 1 }}>
-                <form onSubmit={formik.handleSubmit}>
-                    <Box className='flex flex-col gap-2'>
+        <form onSubmit={formik.handleSubmit}>
+            <Box className='flex flex-col gap-2'>
 
-                        <Typography variant='h1' className='text-2xl mb-2'>
-                            Profile
-                        </Typography>
+                <Typography variant='h2' className='text-xl mb-2'>
+                    Account Information
+                </Typography>
 
+                <Box className='flex flex-row items-center gap-2 mb-4 sm:px-2'>
+                    <Typography>
+                        ID:
+                    </Typography>
+                    <Typography className='rounded-sm bg-current/10 py-1 px-2'>
+                        {user.id}
+                    </Typography>
+                </Box>
 
-                        <Box className='flex flex-row items-center gap-2 mb-4 sm:px-2'>
-                            <Typography>
-                                ID:
-                            </Typography>
-                            <Typography className='rounded-sm bg-current/10 py-1 px-2'>
-                                {user.id}
-                            </Typography>
-                        </Box>
+                <TextField
+                    fullWidth
+                    id='username'
+                    name='username'
+                    label='Username'
+                    value={formik.values.username}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={Boolean(formik.errors.username)}
+                    helperText={formik.errors.username || ' '}
+                />
 
-                        <TextField
-                            fullWidth
-                            id='username'
-                            name='username'
-                            label='Username'
-                            value={formik.values.username}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={Boolean(formik.errors.username)}
-                            helperText={formik.errors.username || ' '}
-                        />
+                <TextField
+                    fullWidth
+                    id='email'
+                    name='email'
+                    label='Email'
+                    value={formik.values.email}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={Boolean(formik.errors.email)}
+                    helperText={formik.errors.email || ' '}
+                />
 
-                        <TextField
-                            fullWidth
-                            id='email'
-                            name='email'
-                            label='Email'
-                            value={formik.values.email}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={Boolean(formik.errors.email)}
-                            helperText={formik.errors.email || ' '}
-                        />
+                <TextField
+                    fullWidth
+                    multiline
+                    minRows={4}
+                    id='note'
+                    name='note'
+                    label='Note'
+                    value={formik.values.note}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={Boolean(formik.errors.note)}
+                    helperText={formik.errors.note || ' '}
+                />
 
-                        <TextField
-                            fullWidth
-                            multiline
-                            minRows={4}
-                            id='note'
-                            name='note'
-                            label='Note'
-                            value={formik.values.note}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={Boolean(formik.errors.note)}
-                            helperText={formik.errors.note || ' '}
-                        />
+                {updateUserIsLoading &&
+                    <CircularProgress aria-label='Loading…' className='mx-auto mb-5' />
+                }
 
-                        {updateUserIsLoading &&
-                            <CircularProgress aria-label='Loading…' className='mx-auto mb-5' />
-                        }
+                {updateUserIsSuccess &&
+                    <Alert variant='outlined' severity='info' className='mb-5'>
+                        Update was successful.
+                    </Alert>
+                }
 
-                        {updateUserIsSuccess &&
-                            <Alert variant='outlined' severity='info' className='mb-5'>
-                                Update was successful.
-                            </Alert>
-                        }
+                {updateUserIsError &&
+                    <Alert variant='outlined' severity='error' className='mb-5'>
+                        {updateUserErrorMessage || 'Something went wrong.'}
+                    </Alert>
+                }
 
-                        {updateUserIsError &&
-                            <Alert variant='outlined' severity='error' className='mb-5'>
-                                {updateUserErrorMessage || 'Something went wrong.'}
-                            </Alert>
-                        }
+                <Box className='flex flex-row items-center gap-2 mb-4'>
+                    <Button
+                        startIcon={<DeleteIcon />}
+                        fullWidth
+                        color='error'
+                        variant='outlined'
+                        disabled={!formik.dirty}
+                        onClick={() => {
+                            formik.resetForm();
+                        }}
+                    >
+                        Discard
+                    </Button>
 
-                        <Box className='flex flex-row items-center gap-2 mb-4'>
-                            <Button
-                                startIcon={<DeleteIcon />}
-                                fullWidth
-                                color='error'
-                                variant='outlined'
-                                disabled={!formik.dirty}
-                                onClick={() => {
-                                    formik.resetForm();
-                                }}
-                            >
-                                Discard
-                            </Button>
-
-                            <Button
-                                startIcon={<SaveIcon />}
-                                fullWidth
-                                color='primary'
-                                variant='contained'
-                                type='submit'
-                                disabled={!formik.dirty || !formik.isValid}
-                            >
-                                Save
-                            </Button>
-                        </Box>
-                    </Box>
-                </form>
+                    <Button
+                        startIcon={<SaveIcon />}
+                        fullWidth
+                        color='primary'
+                        variant='contained'
+                        type='submit'
+                        disabled={!formik.dirty || !formik.isValid}
+                    >
+                        Save
+                    </Button>
+                </Box>
             </Box>
-        </Box>
+        </form>
+    );
+}
+
+interface DeleteFormProps {
+    user: User,
+    setDeleteUserIsSuccessCallback: Dispatch<SetStateAction<boolean>>
+}
+
+function DeleteForm({ user, setDeleteUserIsSuccessCallback }: DeleteFormProps) {
+    const [deleteUserErrorMessage, setDeleteUserErrorMessage] = useState<string>('');
+    const [deleteUserRequest, {
+        isLoading: deleteUserIsLoading,
+        isError: deleteUserIsError,
+        isSuccess: deleteUserIsSuccess,
+    }] = useDeleteUserRequestMutation();
+
+    // Keep caller updated with whether a user deletion happened
+    useEffect(() => {
+        setDeleteUserIsSuccessCallback(deleteUserIsSuccess);
+    }, [deleteUserIsSuccess]);
+
+    const deleteFormValidationSchema = yup.object({
+        username: yup
+            .string()
+            .required(),
+        usernameConfirmation: yup
+            .string()
+            .equals([yup.ref('username')], "username confirmation must match username"),
+    });
+
+    const formik = useFormik({
+        enableReinitialize: true,
+        initialValues: {
+            username: user?.username || '',
+            usernameConfirmation: '',
+        },
+        validationSchema: deleteFormValidationSchema,
+        onSubmit: async (values) => {
+            try {
+                // Trigger call to delete
+                const result = await deleteUserRequest().unwrap();
+            } catch (err: any) {
+                console.error(`Failed to delete: ${JSON.stringify(err)}`);
+                setDeleteUserErrorMessage(err?.data?.detail);
+            }
+        },
+    });
+
+    return (
+        <form onSubmit={formik.handleSubmit}>
+            <Box className='flex flex-col gap-4'>
+
+                <Typography variant='h2' className='text-xl'>
+                    Delete Account
+                </Typography>
+
+                <Typography>
+                    Enter your username to delete your account. This will log you out.
+                </Typography>
+
+                <TextField
+                    fullWidth
+                    id='usernameConfirmation'
+                    name='usernameConfirmation'
+                    label='Username Confirmation'
+                    value={formik.values.usernameConfirmation}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={formik.touched.usernameConfirmation && Boolean(formik.errors.usernameConfirmation)}
+                    helperText={formik.touched.usernameConfirmation && formik.errors.usernameConfirmation || ' '}
+                />
+
+                {deleteUserIsLoading &&
+                    <CircularProgress aria-label='Loading…' className='mx-auto mb-5' />
+                }
+
+                {deleteUserIsSuccess &&
+                    <Alert variant='outlined' severity='info' className='mb-5'>
+                        Deletion was successful.
+                    </Alert>
+                }
+
+                {deleteUserIsError &&
+                    <Alert variant='outlined' severity='error' className='mb-5'>
+                        {deleteUserErrorMessage || 'Something went wrong.'}
+                    </Alert>
+                }
+
+                <Box className='flex flex-row items-center mb-4'>
+                    <Button
+                        startIcon={<DangerousIcon />}
+                        fullWidth
+                        type='submit'
+                        color='error'
+                        variant='contained'
+                        disabled={!formik.dirty || !formik.isValid}
+                    >
+                        Delete Account
+                    </Button>
+                </Box>
+            </Box>
+        </form>
     );
 }
 
@@ -182,31 +280,60 @@ export default function ProfilePage() {
         isError: getCurrentUserIsError,
         error: getCurrentUserError,
     } = useGetCurrentUserQuery();
+    const [deleteUserIsSuccess, setDeleteUserIsSuccess] = useState<boolean>(false);
 
-    if (getCurrentUserIsLoading) { // Loading placeholder
-        <Box className='flex flex-col items-center'>
-            <CircularProgress aria-label='Loading…' color='inherit' size='20px' />
-        </Box>
+    // Loading user info placeholder
+    if (getCurrentUserIsLoading) {
+        return (
+            <Box className='flex flex-col items-center'>
+                <CircularProgress aria-label='Loading…' color='inherit' size='20px' />
+            </Box>
+        );
     }
-    else { // Once info has loaded
-        if (getCurrentUserIsError || !currentUser) { // If there was an error
+
+    // Loading user info had an error
+    if (getCurrentUserIsError || !currentUser) {
+
+        // Not actually an error, user was just deleted
+        if (deleteUserIsSuccess) {
             return (
                 <Box className='flex flex-col items-center'>
-
-                    <Alert variant='outlined' severity='error' className='mb-5'>
-                        {(getCurrentUserError as SerializedError)?.message || 'Something went wrong.'}
+                    <Alert variant='outlined' className='mb-5'>
+                        Account was deleted.
                     </Alert>
-
                     <Link href={PATHS.LOGIN}>
                         Login
                     </Link>
-
                 </Box>
             );
-        } else { // Display user form
-            return (
-                <UserForm user={currentUser} />
-            );
         }
+
+        // Generic error message
+        return (
+            <Box className='flex flex-col items-center'>
+                <Alert variant='outlined' severity='error' className='mb-5'>
+                    {(getCurrentUserError as SerializedError)?.message || 'Something went wrong.'}
+                </Alert>
+                <Link href={PATHS.LOGIN}>
+                    Login
+                </Link>
+            </Box>
+        );
     }
+
+    // Display forms
+    return (
+        <Box className='flex flex-col items-center'>
+            <Box className='w-95/100 sm:w-sm md:w-md p-5 rounded-lg' sx={{ boxShadow: 1 }}>
+                <Typography variant='h1' className='text-2xl mb-2'>
+                    Profile
+                </Typography>
+                <UserForm user={currentUser} />
+                <Divider className='my-4' />
+                <DeleteForm
+                    user={currentUser}
+                    setDeleteUserIsSuccessCallback={setDeleteUserIsSuccess}
+                />
+            </Box>
+        </Box>);
 }
