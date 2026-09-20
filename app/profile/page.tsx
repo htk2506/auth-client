@@ -1,6 +1,6 @@
 
 'use client'
-import { useGetCurrentUserQuery, useDeleteUserRequestMutation, usePutUpdateUserRequestMutation } from '@/lib/api-slice';
+import { useDeleteUserRequestMutation, useGetCurrentUserQuery, usePutUpdateUserRequestMutation } from '@/lib/api-slice';
 import { PATHS } from '@/lib/paths';
 import { UpdateUserRequestBody, User } from '@/lib/types';
 import DangerousIcon from '@mui/icons-material/Dangerous';
@@ -271,38 +271,42 @@ export default function ProfilePage() {
         error: getCurrentUserError,
     } = useGetCurrentUserQuery();
 
-    if (getCurrentUserIsLoading) { // Loading placeholder
+    // Loading user info placeholder
+    if (getCurrentUserIsLoading) {
+        return (
+            <Box className='flex flex-col items-center'>
+                <CircularProgress aria-label='Loading…' color='inherit' size='20px' />
+            </Box>
+        );
+    }
+
+    // Loading user info had an error
+    if (getCurrentUserIsError || !currentUser) {
+        return (
+            <Box className='flex flex-col items-center'>
+
+                <Alert variant='outlined' severity='error' className='mb-5'>
+                    {(getCurrentUserError as SerializedError)?.message || 'Something went wrong.'}
+                </Alert>
+
+                <Link href={PATHS.LOGIN}>
+                    Login
+                </Link>
+
+            </Box>
+        );
+    }
+
+    // Display forms
+    return (
         <Box className='flex flex-col items-center'>
-            <CircularProgress aria-label='Loading…' color='inherit' size='20px' />
-        </Box>
-    }
-    else { // Once info has loaded
-        if (getCurrentUserIsError || !currentUser) { // If there was an error
-            return (
-                <Box className='flex flex-col items-center'>
-
-                    <Alert variant='outlined' severity='error' className='mb-5'>
-                        {(getCurrentUserError as SerializedError)?.message || 'Something went wrong.'}
-                    </Alert>
-
-                    <Link href={PATHS.LOGIN}>
-                        Login
-                    </Link>
-
-                </Box>
-            );
-        } else { // Display user form
-            return (
-                <Box className='flex flex-col items-center'>
-                    <Box className='w-95/100 sm:w-sm md:w-md p-5 rounded-lg' sx={{ boxShadow: 1 }}>
-                        <Typography variant='h1' className='text-2xl mb-2'>
-                            Profile
-                        </Typography>
-                        <UserForm user={currentUser} />
-                        <Divider className='my-4' />
-                        <DeleteForm user={currentUser} />
-                    </Box>
-                </Box>);
-        }
-    }
+            <Box className='w-95/100 sm:w-sm md:w-md p-5 rounded-lg' sx={{ boxShadow: 1 }}>
+                <Typography variant='h1' className='text-2xl mb-2'>
+                    Profile
+                </Typography>
+                <UserForm user={currentUser} />
+                <Divider className='my-4' />
+                <DeleteForm user={currentUser} />
+            </Box>
+        </Box>);
 }
