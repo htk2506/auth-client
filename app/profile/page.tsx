@@ -5,34 +5,34 @@ import { PATHS } from '@/lib/paths';
 import { UpdateUserRequestBody, User } from '@/lib/types';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SaveIcon from '@mui/icons-material/Save';
-import { Alert, Box, Button, CircularProgress, Link, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, CircularProgress, Divider, Link, TextField, Typography } from '@mui/material';
 import { SerializedError } from '@reduxjs/toolkit';
 import { useFormik } from 'formik';
 import { useState } from 'react';
 import * as yup from 'yup';
 
-const validationSchema = yup.object({
-    username: yup
-        .string()
-        .required(),
-    email: yup
-        .string()
-        .email(),
-    note: yup
-        .string(),
-});
-
 interface UserFormProps {
     user: User,
 }
 
-export function UserForm({ user }: UserFormProps) {
+function UserForm({ user }: UserFormProps) {
     const [updateUserErrorMessage, setUpdateUserErrorMessage] = useState<string>('');
     const [putUpdateUserRequest, {
         isLoading: updateUserIsLoading,
         isError: updateUserIsError,
         isSuccess: updateUserIsSuccess,
     }] = usePutUpdateUserRequestMutation();
+
+    const userFormValidationSchema = yup.object({
+        username: yup
+            .string()
+            .required(),
+        email: yup
+            .string()
+            .email(),
+        note: yup
+            .string(),
+    });
 
     const formik = useFormik({
         enableReinitialize: true,
@@ -41,7 +41,7 @@ export function UserForm({ user }: UserFormProps) {
             email: user?.email || '',
             note: user?.note || '',
         },
-        validationSchema: validationSchema,
+        validationSchema: userFormValidationSchema,
         onSubmit: async (values) => {
             try {
                 const updateUserRequest: UpdateUserRequestBody = {
@@ -69,109 +69,108 @@ export function UserForm({ user }: UserFormProps) {
     });
 
     return (
-        <Box className='flex flex-col items-center'>
-            <Box className='w-95/100 sm:w-sm md:w-md p-5 rounded-lg' sx={{ boxShadow: 1 }}>
-                <form onSubmit={formik.handleSubmit}>
-                    <Box className='flex flex-col gap-2'>
+        <form onSubmit={formik.handleSubmit}>
+            <Box className='flex flex-col gap-2'>
 
-                        <Typography variant='h1' className='text-2xl mb-2'>
-                            Profile
-                        </Typography>
+                <Typography variant='h2' className='text-xl mb-2'>
+                    Account Information
+                </Typography>
 
+                <Box className='flex flex-row items-center gap-2 mb-4 sm:px-2'>
+                    <Typography>
+                        ID:
+                    </Typography>
+                    <Typography className='rounded-sm bg-current/10 py-1 px-2'>
+                        {user.id}
+                    </Typography>
+                </Box>
 
-                        <Box className='flex flex-row items-center gap-2 mb-4 sm:px-2'>
-                            <Typography>
-                                ID:
-                            </Typography>
-                            <Typography className='rounded-sm bg-current/10 py-1 px-2'>
-                                {user.id}
-                            </Typography>
-                        </Box>
+                <TextField
+                    fullWidth
+                    id='username'
+                    name='username'
+                    label='Username'
+                    value={formik.values.username}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={Boolean(formik.errors.username)}
+                    helperText={formik.errors.username || ' '}
+                />
 
-                        <TextField
-                            fullWidth
-                            id='username'
-                            name='username'
-                            label='Username'
-                            value={formik.values.username}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={Boolean(formik.errors.username)}
-                            helperText={formik.errors.username || ' '}
-                        />
+                <TextField
+                    fullWidth
+                    id='email'
+                    name='email'
+                    label='Email'
+                    value={formik.values.email}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={Boolean(formik.errors.email)}
+                    helperText={formik.errors.email || ' '}
+                />
 
-                        <TextField
-                            fullWidth
-                            id='email'
-                            name='email'
-                            label='Email'
-                            value={formik.values.email}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={Boolean(formik.errors.email)}
-                            helperText={formik.errors.email || ' '}
-                        />
+                <TextField
+                    fullWidth
+                    multiline
+                    minRows={4}
+                    id='note'
+                    name='note'
+                    label='Note'
+                    value={formik.values.note}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={Boolean(formik.errors.note)}
+                    helperText={formik.errors.note || ' '}
+                />
 
-                        <TextField
-                            fullWidth
-                            multiline
-                            minRows={4}
-                            id='note'
-                            name='note'
-                            label='Note'
-                            value={formik.values.note}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={Boolean(formik.errors.note)}
-                            helperText={formik.errors.note || ' '}
-                        />
+                {updateUserIsLoading &&
+                    <CircularProgress aria-label='Loading…' className='mx-auto mb-5' />
+                }
 
-                        {updateUserIsLoading &&
-                            <CircularProgress aria-label='Loading…' className='mx-auto mb-5' />
-                        }
+                {updateUserIsSuccess &&
+                    <Alert variant='outlined' severity='info' className='mb-5'>
+                        Update was successful.
+                    </Alert>
+                }
 
-                        {updateUserIsSuccess &&
-                            <Alert variant='outlined' severity='info' className='mb-5'>
-                                Update was successful.
-                            </Alert>
-                        }
+                {updateUserIsError &&
+                    <Alert variant='outlined' severity='error' className='mb-5'>
+                        {updateUserErrorMessage || 'Something went wrong.'}
+                    </Alert>
+                }
 
-                        {updateUserIsError &&
-                            <Alert variant='outlined' severity='error' className='mb-5'>
-                                {updateUserErrorMessage || 'Something went wrong.'}
-                            </Alert>
-                        }
+                <Box className='flex flex-row items-center gap-2 mb-4'>
+                    <Button
+                        startIcon={<DeleteIcon />}
+                        fullWidth
+                        color='error'
+                        variant='outlined'
+                        disabled={!formik.dirty}
+                        onClick={() => {
+                            formik.resetForm();
+                        }}
+                    >
+                        Discard
+                    </Button>
 
-                        <Box className='flex flex-row items-center gap-2 mb-4'>
-                            <Button
-                                startIcon={<DeleteIcon />}
-                                fullWidth
-                                color='error'
-                                variant='outlined'
-                                disabled={!formik.dirty}
-                                onClick={() => {
-                                    formik.resetForm();
-                                }}
-                            >
-                                Discard
-                            </Button>
-
-                            <Button
-                                startIcon={<SaveIcon />}
-                                fullWidth
-                                color='primary'
-                                variant='contained'
-                                type='submit'
-                                disabled={!formik.dirty || !formik.isValid}
-                            >
-                                Save
-                            </Button>
-                        </Box>
-                    </Box>
-                </form>
+                    <Button
+                        startIcon={<SaveIcon />}
+                        fullWidth
+                        color='primary'
+                        variant='contained'
+                        type='submit'
+                        disabled={!formik.dirty || !formik.isValid}
+                    >
+                        Save
+                    </Button>
+                </Box>
             </Box>
-        </Box>
+        </form>
     );
+}
+
+function deleteForm({ user }: UserFormProps) {
+
 }
 
 export default function ProfilePage() {
@@ -205,8 +204,15 @@ export default function ProfilePage() {
             );
         } else { // Display user form
             return (
-                <UserForm user={currentUser} />
-            );
+                <Box className='flex flex-col items-center'>
+                    <Box className='w-95/100 sm:w-sm md:w-md p-5 rounded-lg' sx={{ boxShadow: 1 }}>
+                        <Typography variant='h1' className='text-2xl mb-2'>
+                            Profile
+                        </Typography>
+                        <UserForm user={currentUser} />
+                        <Divider />
+                    </Box>
+                </Box>);
         }
     }
 }
