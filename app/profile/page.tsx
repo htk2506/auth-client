@@ -1,8 +1,9 @@
 
 'use client'
-import { useGetCurrentUserQuery, usePutUpdateUserRequestMutation } from '@/lib/api-slice';
+import { useGetCurrentUserQuery, useDeleteUserRequestMutation, usePutUpdateUserRequestMutation } from '@/lib/api-slice';
 import { PATHS } from '@/lib/paths';
 import { UpdateUserRequestBody, User } from '@/lib/types';
+import DangerousIcon from '@mui/icons-material/Dangerous';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SaveIcon from '@mui/icons-material/Save';
 import { Alert, Box, Button, CircularProgress, Divider, Link, TextField, Typography } from '@mui/material';
@@ -54,7 +55,7 @@ function UserForm({ user }: UserFormProps) {
                 const result = await putUpdateUserRequest(updateUserRequest).unwrap();
 
             } catch (err: any) {
-                console.error(`Failed to  update: ${JSON.stringify(err)}`);
+                console.error(`Failed to update: ${JSON.stringify(err)}`);
 
                 setUpdateUserErrorMessage(err?.data?.detail);
 
@@ -169,8 +170,96 @@ function UserForm({ user }: UserFormProps) {
     );
 }
 
-function deleteForm({ user }: UserFormProps) {
+function DeleteForm({ user }: UserFormProps) {
+    const [deleteUserErrorMessage, setDeleteUserErrorMessage] = useState<string>('');
+    const [deleteUserRequest, {
+        isLoading: deleteUserIsLoading,
+        isError: deleteUserIsError,
+        isSuccess: deleteUserIsSuccess,
+    }] = useDeleteUserRequestMutation();
 
+    const deleteFormValidationSchema = yup.object({
+        username: yup
+            .string()
+            .required(),
+        usernameConfirmation: yup
+            .string()
+            .equals([yup.ref('username')], "username confirmation must match username"),
+    });
+
+    const formik = useFormik({
+        enableReinitialize: true,
+        initialValues: {
+            username: user?.username || '',
+            usernameConfirmation: '',
+        },
+        validationSchema: deleteFormValidationSchema,
+        onSubmit: async (values) => {
+            try {
+                // Trigger call to delete
+                const result = await deleteUserRequest().unwrap();
+            } catch (err: any) {
+                console.error(`Failed to delete: ${JSON.stringify(err)}`);
+                setDeleteUserErrorMessage(err?.data?.detail);
+            }
+        },
+    });
+
+    return (
+        <form onSubmit={formik.handleSubmit}>
+            <Box className='flex flex-col gap-4'>
+
+                <Typography variant='h2' className='text-xl'>
+                    Delete Account
+                </Typography>
+
+                <Typography>
+                    Enter your username to delete your account. This will log you out.
+                </Typography>
+
+                <TextField
+                    fullWidth
+                    id='usernameConfirmation'
+                    name='usernameConfirmation'
+                    label='Username Confirmation'
+                    value={formik.values.usernameConfirmation}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={formik.touched.usernameConfirmation && Boolean(formik.errors.usernameConfirmation)}
+                    helperText={formik.touched.usernameConfirmation && formik.errors.usernameConfirmation || ' '}
+                />
+
+                {deleteUserIsLoading &&
+                    <CircularProgress aria-label='Loading…' className='mx-auto mb-5' />
+                }
+
+                {deleteUserIsSuccess &&
+                    <Alert variant='outlined' severity='info' className='mb-5'>
+                        Deletion was successful.
+                    </Alert>
+                }
+
+                {deleteUserIsError &&
+                    <Alert variant='outlined' severity='error' className='mb-5'>
+                        {deleteUserErrorMessage || 'Something went wrong.'}
+                    </Alert>
+                }
+
+                <Box className='flex flex-row items-center mb-4'>
+                    <Button
+                        startIcon={<DangerousIcon />}
+                        fullWidth
+                        type='submit'
+                        color='error'
+                        variant='contained'
+                        disabled={!formik.dirty || !formik.isValid}
+                    >
+                        Delete Account
+                    </Button>
+                </Box>
+            </Box>
+        </form>
+    );
 }
 
 export default function ProfilePage() {
@@ -210,7 +299,8 @@ export default function ProfilePage() {
                             Profile
                         </Typography>
                         <UserForm user={currentUser} />
-                        <Divider />
+                        <Divider className='my-4' />
+                        <DeleteForm user={currentUser} />
                     </Box>
                 </Box>);
         }
