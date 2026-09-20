@@ -9,7 +9,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import { Alert, Box, Button, CircularProgress, Divider, Link, TextField, Typography } from '@mui/material';
 import { SerializedError } from '@reduxjs/toolkit';
 import { useFormik } from 'formik';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import * as yup from 'yup';
 
 interface UserFormProps {
@@ -170,13 +170,23 @@ function UserForm({ user }: UserFormProps) {
     );
 }
 
-function DeleteForm({ user }: UserFormProps) {
+interface DeleteFormProps {
+    user: User,
+    setDeleteUserIsSuccessCallback: Dispatch<SetStateAction<boolean>>
+}
+
+function DeleteForm({ user, setDeleteUserIsSuccessCallback }: DeleteFormProps) {
     const [deleteUserErrorMessage, setDeleteUserErrorMessage] = useState<string>('');
     const [deleteUserRequest, {
         isLoading: deleteUserIsLoading,
         isError: deleteUserIsError,
         isSuccess: deleteUserIsSuccess,
     }] = useDeleteUserRequestMutation();
+
+    // Keep caller updated with whether a user deletion happened
+    useEffect(() => {
+        setDeleteUserIsSuccessCallback(deleteUserIsSuccess);
+    }, [deleteUserIsSuccess]);
 
     const deleteFormValidationSchema = yup.object({
         username: yup
@@ -270,6 +280,7 @@ export default function ProfilePage() {
         isError: getCurrentUserIsError,
         error: getCurrentUserError,
     } = useGetCurrentUserQuery();
+    const [deleteUserIsSuccess, setDeleteUserIsSuccess] = useState<boolean>(false);
 
     // Loading user info placeholder
     if (getCurrentUserIsLoading) {
@@ -282,17 +293,30 @@ export default function ProfilePage() {
 
     // Loading user info had an error
     if (getCurrentUserIsError || !currentUser) {
+
+        // Not actually an error, user was just deleted
+        if (deleteUserIsSuccess) {
+            return (
+                <Box className='flex flex-col items-center'>
+                    <Alert variant='outlined' className='mb-5'>
+                        Account was deleted.
+                    </Alert>
+                    <Link href={PATHS.LOGIN}>
+                        Login
+                    </Link>
+                </Box>
+            );
+        }
+
+        // Generic error message
         return (
             <Box className='flex flex-col items-center'>
-
                 <Alert variant='outlined' severity='error' className='mb-5'>
                     {(getCurrentUserError as SerializedError)?.message || 'Something went wrong.'}
                 </Alert>
-
                 <Link href={PATHS.LOGIN}>
                     Login
                 </Link>
-
             </Box>
         );
     }
@@ -306,7 +330,10 @@ export default function ProfilePage() {
                 </Typography>
                 <UserForm user={currentUser} />
                 <Divider className='my-4' />
-                <DeleteForm user={currentUser} />
+                <DeleteForm
+                    user={currentUser}
+                    setDeleteUserIsSuccessCallback={setDeleteUserIsSuccess}
+                />
             </Box>
         </Box>);
 }
