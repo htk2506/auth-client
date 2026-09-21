@@ -525,7 +525,7 @@ export default function ProfilePage() {
 
     // Display forms
     return (
-        <Box className='flex flex-col items-center'>
+        <Box className='flex flex-col items-center mb-10'>
             <Box className='w-95/100 sm:w-sm md:w-md p-5 rounded-lg' sx={{ boxShadow: 1 }}>
                 <Typography variant='h1' className='text-2xl mb-2'>
                     Profile
