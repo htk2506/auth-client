@@ -79,7 +79,7 @@ export default function CreateUserForm() {
     });
 
     return (
-        <Box className='flex flex-col items-center'>
+        <Box className='flex flex-col items-center mb-10'>
             <Box className='w-95/100 sm:w-sm md:w-md p-5 rounded-lg' sx={{ boxShadow: 1 }}>
                 <form onSubmit={formik.handleSubmit}>
                     <Box className='flex flex-col gap-2'>
