@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { getSessionToken, hasUnexpiredSessionToken } from './session-token-management';
-import { CreateUserRequestBody, CreateUserResponseBody, LoginUserRequestBody, LoginUserResponseBody, MessageResponseBody, UpdateUserRequestBody, UpdateUserResponseBody, User } from './types';
+import { CreateUserRequestBody, CreateUserResponseBody, LoginUserRequestBody, LoginUserResponseBody, MessageResponseBody, UpdateUserPasswordRequestBody, UpdateUserRequestBody, UpdateUserResponseBody, User } from './types';
 
 /**
  * Generates a value for an Authorization header using a bearer token.
@@ -80,6 +80,17 @@ export const apiSlice = createApi({
             }),
             invalidatesTags: ['CurrentUser'],
         }),
+        putUpdateUserPasswordRequest: builder.mutation<MessageResponseBody, UpdateUserPasswordRequestBody>({
+            query: (updateUserPasswordRequest: UpdateUserPasswordRequestBody) => ({
+                url: `v1/users/me/password`,
+                method: 'PUT',
+                headers: {
+                    ['Authorization']: generateAuthorizationHeader(),
+                },
+                body: updateUserPasswordRequest,
+            }),
+            invalidatesTags: ['CurrentUser'],
+        }),
     }),
 })
 
@@ -91,4 +102,5 @@ export const {
     usePutUpdateUserRequestMutation,
     usePostCreateUserRequestMutation,
     useDeleteUserRequestMutation,
+    usePutUpdateUserPasswordRequestMutation,
 } = apiSlice
