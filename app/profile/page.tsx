@@ -1,12 +1,13 @@
 
 'use client'
-import { useDeleteUserRequestMutation, useGetCurrentUserQuery, usePutUpdateUserRequestMutation } from '@/lib/api-slice';
+import { useDeleteUserRequestMutation, useGetCurrentUserQuery, usePutUpdateUserPasswordRequestMutation, usePutUpdateUserRequestMutation } from '@/lib/api-slice';
 import { PATHS } from '@/lib/paths';
-import { UpdateUserRequestBody, User } from '@/lib/types';
+import { UpdateUserPasswordRequestBody, UpdateUserRequestBody, User } from '@/lib/types';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import DangerousIcon from '@mui/icons-material/Dangerous';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SaveIcon from '@mui/icons-material/Save';
-import { Alert, Box, Button, CircularProgress, Divider, Link, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, CircularProgress, Divider, IconButton, InputAdornment, Link, TextField, Typography } from '@mui/material';
 import { SerializedError } from '@reduxjs/toolkit';
 import { useFormik } from 'formik';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
@@ -53,7 +54,6 @@ function UserForm({ user }: UserFormProps) {
 
                 // Trigger call to update
                 const result = await putUpdateUserRequest(updateUserRequest).unwrap();
-
             } catch (err: any) {
                 console.error(`Failed to update: ${JSON.stringify(err)}`);
 
@@ -272,6 +272,193 @@ function DeleteForm({ user, setDeleteUserIsSuccessCallback }: DeleteFormProps) {
     );
 }
 
+interface UpdatePasswordFormProps {
+    user: User,
+    setUpdatePasswordIsSuccessCallback: Dispatch<SetStateAction<boolean>>
+}
+
+function UpdatePasswordForm({ user, setUpdatePasswordIsSuccessCallback }: UpdatePasswordFormProps) {
+    const [updatePasswordErrorMessage, setUpdatePasswordErrorMessage] = useState<string>('');
+    const [putUpdateUserPasswordRequestMutation, {
+        isLoading: updatePasswordIsLoading,
+        isError: updatePasswordIsError,
+        isSuccess: updatePasswordIsSuccess,
+    }] = usePutUpdateUserPasswordRequestMutation();
+    const [showPassword, setShowPassword] = useState<boolean>(false);
+
+    // Toggles whether or not to show password plain text
+    const handleClickShowPassword = () => setShowPassword((showPassword) => !showPassword);
+
+    // Keep caller updated with whether a password update happened
+    useEffect(() => {
+        setUpdatePasswordIsSuccessCallback(updatePasswordIsSuccess);
+    }, [updatePasswordIsSuccess]);
+
+    const updatePasswordValidationSchema = yup.object({
+        currentPassword: yup
+            .string()
+            .required(),
+        newPassword: yup
+            .string()
+            .required(),
+        newPasswordConfirmation: yup
+            .string()
+            .required()
+            .equals([yup.ref('newPassword')], "password confirmation must match new password"),
+    });
+
+    const formik = useFormik({
+        enableReinitialize: true,
+        initialValues: {
+            currentPassword: '',
+            newPassword: '',
+            newPasswordConfirmation: '',
+        },
+        validationSchema: updatePasswordValidationSchema,
+        onSubmit: async (values) => {
+            try {
+                const updateUserPasswordRequest: UpdateUserPasswordRequestBody = {
+                    current_password: values.currentPassword,
+                    new_password: values.newPassword,
+                }
+
+                // Trigger call to update password
+                const result = await putUpdateUserPasswordRequestMutation(updateUserPasswordRequest).unwrap();
+            } catch (err: any) {
+                console.error(`Failed to update password: ${JSON.stringify(err)}`);
+                setUpdatePasswordErrorMessage(err?.data?.detail);
+                const errorData = {
+                    currentPassword: err?.data?.errors?.CurrentPassword || null,
+                    newPassword: err?.data?.errors?.NewPassword || null,
+                }
+                formik.setErrors(errorData);
+            }
+        },
+    });
+
+    return (
+        <form onSubmit={formik.handleSubmit}>
+            <Box className='flex flex-col gap-4'>
+
+                <Typography variant='h2' className='text-xl'>
+                    Update Password
+                </Typography>
+
+                <Typography>
+                    Updating your password will log you out.
+                </Typography>
+
+                <TextField
+                    fullWidth
+                    id='currentPassword'
+                    name='currentPassword'
+                    label='Current Password'
+                    type={showPassword ? 'text' : 'password'}
+                    value={formik.values.currentPassword}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={formik.touched.currentPassword && Boolean(formik.errors.currentPassword)}
+                    helperText={formik.touched.currentPassword && formik.errors.currentPassword || ' '}
+                    slotProps={{
+                        input: {
+                            endAdornment:
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        aria-label="toggle password visibility"
+                                        onClick={handleClickShowPassword}
+                                    >
+                                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                                    </IconButton>
+                                </InputAdornment>
+                        }
+                    }}
+                />
+
+                <TextField
+                    fullWidth
+                    id='newPassword'
+                    name='newPassword'
+                    label='New Password'
+                    type={showPassword ? 'text' : 'password'}
+                    value={formik.values.newPassword}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={formik.touched.newPassword && Boolean(formik.errors.newPassword)}
+                    helperText={formik.touched.newPassword && formik.errors.newPassword || ' '}
+                    slotProps={{
+                        input: {
+                            endAdornment:
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        aria-label="toggle password visibility"
+                                        onClick={handleClickShowPassword}
+                                    >
+                                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                                    </IconButton>
+                                </InputAdornment>
+                        }
+                    }}
+                />
+
+                <TextField
+                    fullWidth
+                    id='newPasswordConfirmation'
+                    name='newPasswordConfirmation'
+                    label='Confirm New Password'
+                    type={showPassword ? 'text' : 'password'}
+                    value={formik.values.newPasswordConfirmation}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={formik.touched.newPasswordConfirmation && Boolean(formik.errors.newPasswordConfirmation)}
+                    helperText={formik.touched.newPasswordConfirmation && formik.errors.newPasswordConfirmation || ' '}
+                    slotProps={{
+                        input: {
+                            endAdornment:
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        aria-label="toggle password visibility"
+                                        onClick={handleClickShowPassword}
+                                    >
+                                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                                    </IconButton>
+                                </InputAdornment>
+                        }
+                    }}
+                />
+
+                {updatePasswordIsLoading &&
+                    <CircularProgress aria-label='Loading…' className='mx-auto mb-5' />
+                }
+
+                {updatePasswordIsSuccess &&
+                    <Alert variant='outlined' severity='info' className='mb-5'>
+                        Password update was successful.
+                    </Alert>
+                }
+
+                {updatePasswordIsError &&
+                    <Alert variant='outlined' severity='error' className='mb-5'>
+                        {updatePasswordErrorMessage || 'Something went wrong.'}
+                    </Alert>
+                }
+
+                <Box className='flex flex-row items-center mb-4'>
+                    <Button
+                        startIcon={<SaveIcon />}
+                        fullWidth
+                        color='primary'
+                        variant='contained'
+                        type='submit'
+                        disabled={!formik.dirty || !formik.isValid}
+                    >
+                        Update Password
+                    </Button>
+                </Box>
+            </Box>
+        </form>
+    );
+}
+
 export default function ProfilePage() {
     const {
         data: currentUser,
@@ -281,6 +468,7 @@ export default function ProfilePage() {
         error: getCurrentUserError,
     } = useGetCurrentUserQuery();
     const [deleteUserIsSuccess, setDeleteUserIsSuccess] = useState<boolean>(false);
+    const [updatePasswordIsSuccess, setUpdatePasswordIsSuccess] = useState<boolean>(false);
 
     // Loading user info placeholder
     if (getCurrentUserIsLoading) {
@@ -300,6 +488,20 @@ export default function ProfilePage() {
                 <Box className='flex flex-col items-center'>
                     <Alert variant='outlined' className='mb-5'>
                         Account was deleted.
+                    </Alert>
+                    <Link href={PATHS.LOGIN}>
+                        Login
+                    </Link>
+                </Box>
+            );
+        }
+
+        // Not actually an error, password was updated
+        if (updatePasswordIsSuccess) {
+            return (
+                <Box className='flex flex-col items-center'>
+                    <Alert variant='outlined' className='mb-5'>
+                        Password was updated.
                     </Alert>
                     <Link href={PATHS.LOGIN}>
                         Login
@@ -329,6 +531,11 @@ export default function ProfilePage() {
                     Profile
                 </Typography>
                 <UserForm user={currentUser} />
+                <Divider className='my-4' />
+                <UpdatePasswordForm
+                    user={currentUser}
+                    setUpdatePasswordIsSuccessCallback={setUpdatePasswordIsSuccess}
+                />
                 <Divider className='my-4' />
                 <DeleteForm
                     user={currentUser}
