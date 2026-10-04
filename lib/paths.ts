@@ -7,4 +7,5 @@ export const PATHS = {
     PROFILE: '/profile',
     CREATE_ACCOUNT: '/create-account',
     FORGOT_PASSWORD: '/forgot-password',
+    RESET_PASSWORD: '/reset-password',
 };
