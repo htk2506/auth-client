@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { getSessionToken, hasUnexpiredSessionToken } from './session-token-management';
-import { CreateUserRequestBody, CreateUserResponseBody, LoginUserRequestBody, LoginUserResponseBody, MessageResponseBody, UpdateUserPasswordRequestBody, UpdateUserRequestBody, UpdateUserResponseBody, User } from './types';
+import { CreateUserRequestBody, CreateUserResponseBody, LoginUserRequestBody, LoginUserResponseBody, MessageResponseBody, PasswordResetRequestBody, StartPasswordResetRequestBody, UpdateUserPasswordRequestBody, UpdateUserRequestBody, UpdateUserResponseBody, User } from './types';
 
 /**
  * Generates a value for an Authorization header using a bearer token.
@@ -91,6 +91,20 @@ export const apiSlice = createApi({
             }),
             invalidatesTags: ['CurrentUser'],
         }),
+        postStartPasswordResetRequest: builder.mutation<MessageResponseBody, StartPasswordResetRequestBody>({
+            query: (startPasswordResetRequest: StartPasswordResetRequestBody) => ({
+                url: `v1/users/password-reset-request`,
+                method: 'POST',
+                body: startPasswordResetRequest,
+            }),
+        }),
+        postPasswordResetRequest: builder.mutation<MessageResponseBody, PasswordResetRequestBody>({
+            query: (passwordResetRequest: PasswordResetRequestBody) => ({
+                url: `v1/users/password-reset`,
+                method: 'POST',
+                body: passwordResetRequest,
+            }),
+        }),
     }),
 })
 
@@ -103,4 +117,6 @@ export const {
     usePostCreateUserRequestMutation,
     useDeleteUserRequestMutation,
     usePutUpdateUserPasswordRequestMutation,
+    usePostStartPasswordResetRequestMutation,
+    usePostPasswordResetRequestMutation,
 } = apiSlice
