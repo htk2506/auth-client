@@ -1,4 +1,3 @@
-
 'use client'
 import { usePostPasswordResetRequestMutation } from '@/lib/api-slice';
 import { PATHS } from '@/lib/paths';
@@ -8,7 +7,7 @@ import LockResetIcon from '@mui/icons-material/LockReset';
 import { Alert, Box, Button, CircularProgress, IconButton, InputAdornment, Link, TextField, Typography } from '@mui/material';
 import { useFormik } from 'formik';
 import { useSearchParams } from 'next/navigation';
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
+import { Dispatch, SetStateAction, Suspense, useEffect, useMemo, useState } from 'react';
 import * as yup from 'yup';
 
 interface ResetPasswordFormProps {
@@ -224,15 +223,17 @@ export default function ResetPasswordPage() {
 
     // Display form
     return (
-        <Box className='flex flex-col items-center mb-10'>
-            <Box className='w-95/100 sm:w-sm md:w-md p-5 rounded-lg' sx={{ boxShadow: 1 }}>
-                <Typography variant='h1' className='text-2xl mb-2'>
-                    Reset Password
-                </Typography>
-                <ResetPasswordForm
-                    setResetPasswordIsSuccessCallback={setResetPasswordIsSuccess}
-                />
+        <Suspense fallback={<CircularProgress aria-label='Loading…' className='mx-auto' />}>
+            <Box className='flex flex-col items-center mb-10'>
+                <Box className='w-95/100 sm:w-sm md:w-md p-5 rounded-lg' sx={{ boxShadow: 1 }}>
+                    <Typography variant='h1' className='text-2xl mb-2'>
+                        Reset Password
+                    </Typography>
+                    <ResetPasswordForm
+                        setResetPasswordIsSuccessCallback={setResetPasswordIsSuccess}
+                    />
+                </Box>
             </Box>
-        </Box>
+        </Suspense>
     );
 }
